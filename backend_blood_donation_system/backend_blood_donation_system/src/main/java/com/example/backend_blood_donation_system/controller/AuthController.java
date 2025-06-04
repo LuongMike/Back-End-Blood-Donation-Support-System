@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.backend_blood_donation_system.dto.UserRegistrationDTO;
 import com.example.backend_blood_donation_system.service.AuthService;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -20,15 +23,28 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest.getLogin(), loginRequest.getPassword())
                 .map(user -> ResponseEntity.ok(new LoginResponse(true, "Đăng nhập thành công", user.getFullName())))
                 .orElseGet(() -> ResponseEntity.status(401).body(new LoginResponse(false, "Sai email hoặc mật khẩu", null)));
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@Valid @RequestBody UserRegistrationDTO dto) {
+        String result = authService.registerUser(dto);
+        if (result.equals("User registered successfully!")) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
     @Data
     private static class LoginRequest {
+        @NotBlank(message = "Login không được để trống")
         private String login;      // username hoặc email
+
+        @NotBlank(message = "Mật khẩu không được để trống")
         private String password;
     }
 
