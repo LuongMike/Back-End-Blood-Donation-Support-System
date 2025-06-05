@@ -1,0 +1,21 @@
+package com.example.backend_blood_donation_system.entity;
+
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "BloodType")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class BloodType {
+    private Long blood_type_id;
+
+    private String type;
+
+
+}

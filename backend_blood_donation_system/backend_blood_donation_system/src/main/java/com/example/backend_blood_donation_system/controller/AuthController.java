@@ -17,7 +17,7 @@ import lombok.Data;
 
 @RestController
 @RequestMapping("/api/auth")
-public class AuthController {
+public class    AuthController {
 
     @Autowired
     private AuthService authService;
