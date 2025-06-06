@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,7 +41,13 @@ public class AuthController {
         }
     }
 
-    
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
+        String tokenWithoutPrefix = token.startsWith("Bearer ") ? token.substring(7) : token;
+        jwtService.blacklistToken(tokenWithoutPrefix);
+        // Logic for logout can be implemented here if needed
+        return ResponseEntity.ok("Đăng xuất thành công");
+    }
 
 
     @PostMapping("/register")
