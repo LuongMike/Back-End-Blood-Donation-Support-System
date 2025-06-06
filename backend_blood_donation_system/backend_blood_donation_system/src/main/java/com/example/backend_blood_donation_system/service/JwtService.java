@@ -28,9 +28,10 @@ public class JwtService {
 
 
     //create a JWT token for the given username
-    public String generateToken(String username) {
+    public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -67,4 +68,13 @@ public class JwtService {
         blacklist.setToken(token);
         tokenBlacklistRepository.save(blacklist);
     }
+
+    public String extractRole(String token) {
+    return Jwts.parser()
+            .setSigningKey(secretKey)
+            .parseClaimsJws(token)
+            .getBody()
+            .get("role", String.class);
+}
+
 }
