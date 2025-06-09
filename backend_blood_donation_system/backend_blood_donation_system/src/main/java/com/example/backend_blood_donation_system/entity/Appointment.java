@@ -1,9 +1,13 @@
 package com.example.backend_blood_donation_system.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name ="Appointment")
+@Getter
+@Setter
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
