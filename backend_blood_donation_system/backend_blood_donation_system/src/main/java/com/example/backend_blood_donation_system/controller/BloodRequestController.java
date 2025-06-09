@@ -18,7 +18,7 @@ import com.example.backend_blood_donation_system.service.BloodRequestService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/blood-requests")
+@RequestMapping("/api/staff/blood-requests")
 public class BloodRequestController {
 
     @Autowired
