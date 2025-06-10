@@ -1,6 +1,6 @@
 package com.example.backend_blood_donation_system.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "donation_history", schema = "dbo")
+@Table(name = "DonationHistory", schema = "dbo")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,25 +31,24 @@ public class DonationHistory {
     private Integer donationId;
 
     @ManyToOne
-    @JoinColumn(name = "donor_id")
-    private User donor;
-
-    @Column(name = "blood_type", nullable = false)
-    private String bloodType;
-
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
-
-    @Column(name = "donation_date", nullable = false)
-    private LocalDateTime donationDate;
-
-    @Column(name = "status")
-    private String status; // COMPLETED, CANCELLED
-
-    @Column(name = "notes")
-    private String notes;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "request_id")
-    private BloodRequest bloodRequest;
+    @JoinColumn(name = "center_id")
+    private Center center;
+
+    @ManyToOne
+    @JoinColumn(name = "blood_type_id")
+    private BloodType bloodType;
+
+    @ManyToOne
+    @JoinColumn(name = "component_type_id")
+    private ComponentType componentType;
+
+    @Column(name = "donation_date")
+    private LocalDate donationDate;
+
+    @Column(name = "volume_ml")
+    private Integer volumeMl;
 } 
