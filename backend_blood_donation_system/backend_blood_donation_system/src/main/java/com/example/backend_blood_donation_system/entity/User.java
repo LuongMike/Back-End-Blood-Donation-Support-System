@@ -1,6 +1,7 @@
 package com.example.backend_blood_donation_system.entity;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -70,4 +71,7 @@ public class User {
 
     @Column(name = "status")
     private String status;
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 }
