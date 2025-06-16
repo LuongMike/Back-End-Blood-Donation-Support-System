@@ -23,7 +23,7 @@ public class Appointment {
 
     private java.sql.Date scheduledDate;
 
-    @Column(length = 20)
+    @Column(name = "status",length = 20)
     private String status = "PENDING"; // default khi tạo mới
 
     @Column(length = 50)

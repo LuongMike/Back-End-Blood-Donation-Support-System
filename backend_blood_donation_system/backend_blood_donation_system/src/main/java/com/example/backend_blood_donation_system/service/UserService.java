@@ -4,7 +4,9 @@ import com.example.backend_blood_donation_system.dto.UserInfoDTO;
 import com.example.backend_blood_donation_system.entity.User;
 import com.example.backend_blood_donation_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
