@@ -14,7 +14,7 @@ public class UserRegistrationDTO {
 
         @NotBlank(message = "Họ và tên không được để trống")
         @Size(min = 3, max = 50, message = "Họ và tên phải có độ dài từ 3 đến 50 ký tự")
-        @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Họ và tên chỉ được chứa chữ cái và khoảng trắng")
+        @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Họ và tên chỉ được chứa chữ cái và khoảng trắng")
         private String fullName;
         
         @NotBlank(message = "Email không được để trống")

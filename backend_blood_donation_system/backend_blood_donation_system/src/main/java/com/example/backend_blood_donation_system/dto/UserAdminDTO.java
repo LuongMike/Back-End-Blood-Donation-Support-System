@@ -42,6 +42,6 @@ public class UserAdminDTO {
     private String address;
 
     @NotBlank(message = "Vai trò không được để trống")
-    @Pattern(regexp = "^(Admin|User|Staff)$", message = "Vai trò phải là 'Admin' hoặc 'User' hoặc 'Staff'")
+    @Pattern(regexp = "^(ADMIN|MEMBER|STAFF)$", message = "Vai trò phải là 'Admin' hoặc 'User' hoặc 'Staff'")
     private String role;
 }
