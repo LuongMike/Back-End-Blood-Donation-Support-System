@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.backend_blood_donation_system.security.CustomUserDetails;
 import com.example.backend_blood_donation_system.service.JwtService;
 
 import jakarta.servlet.FilterChain;
@@ -40,24 +41,44 @@ public class JwtFilter extends OncePerRequestFilter {
             tokenValue = token.substring(7);
         }
 
+        // if (tokenValue != null && !jwtService.isTokenBlacklisted(tokenValue) && !jwtService.isTokenExpired(tokenValue)) {
+        //     String username = jwtService.extractUsername(tokenValue);
+        //     String role = jwtService.extractRole(tokenValue); // Lấy role từ JWT
+
+        //     // Tạo authorities
+        //     List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+
+        //     // Tạo Authentication
+        //     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
+
+        //     // Set vào context
+        //     SecurityContextHolder.getContext().setAuthentication(auth);
+
+        //     filterChain.doFilter(request, response);
+        // } else {
+        //     // Token không hợp lệ hoặc bị blacklist
+        //     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        //     response.getWriter().write("Token is invalid or blacklisted");
+        // }
+
         if (tokenValue != null && !jwtService.isTokenBlacklisted(tokenValue) && !jwtService.isTokenExpired(tokenValue)) {
+            Integer userId = jwtService.extractUserId(tokenValue);
             String username = jwtService.extractUsername(tokenValue);
-            String role = jwtService.extractRole(tokenValue); // Lấy role từ JWT
+            String role = jwtService.extractRole(tokenValue);
 
-            // Tạo authorities
             List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+            CustomUserDetails userDetails = new CustomUserDetails(userId, username, role, authorities);
 
-            // Tạo Authentication
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
+            UsernamePasswordAuthenticationToken auth =
+            new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
 
-            // Set vào context
             SecurityContextHolder.getContext().setAuthentication(auth);
-
             filterChain.doFilter(request, response);
-        } else {
+        }  else {
             // Token không hợp lệ hoặc bị blacklist
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token is invalid or blacklisted");
         }
+
     }
 }
