@@ -27,16 +27,28 @@ public class JwtService {
     }
 
 
-    //create a JWT token for the given username
-    public String generateToken(String username, String role) {
-        return Jwts.builder()
-                .setSubject(username)
-                .claim("role", role)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-    }
+    // //create a JWT token for the given username
+    // public String generateToken(String username, String role) {
+    //     return Jwts.builder()
+    //             .setSubject(username)
+    //             .claim("role", role)
+    //             .setIssuedAt(new Date())
+    //             .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+    //             .signWith(SignatureAlgorithm.HS256, secretKey)
+    //             .compact();
+    // }
+
+    public String generateToken(Integer userId, String username, String role) {
+    return Jwts.builder()
+            .setSubject(username)
+            .claim("userId", userId)
+            .claim("role", role)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
+}
+
 
     //take username from the JWT token
     public String extractUsername(String token) {
@@ -75,6 +87,20 @@ public class JwtService {
             .parseClaimsJws(token)
             .getBody()
             .get("role", String.class);
-}
+    }
+
+    public Integer extractUserId(String token) {
+    Object idClaim = Jwts.parser()
+        .setSigningKey(secretKey)
+        .parseClaimsJws(token)
+        .getBody()
+        .get("userId");
+    
+    if (idClaim == null) {
+        throw new IllegalArgumentException("Token không chứa userId");
+    }
+
+    return Integer.parseInt(idClaim.toString());
+    }
 
 }
