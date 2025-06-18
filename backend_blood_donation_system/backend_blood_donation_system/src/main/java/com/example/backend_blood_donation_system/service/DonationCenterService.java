@@ -1,7 +1,7 @@
 package com.example.backend_blood_donation_system.service;
 
 
-import com.example.backend_blood_donation_system.dto.DonationCenterNameDTO;
+import com.example.backend_blood_donation_system.dto.DonationCenterDTO;
 import com.example.backend_blood_donation_system.entity.DonationCenter;
 import com.example.backend_blood_donation_system.repository.DonationCenterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +16,16 @@ public class DonationCenterService {
     @Autowired
     private DonationCenterRepository repository;
 
-    public List<DonationCenterNameDTO> getAllDonationCenterNames() {
+    public List<DonationCenterDTO> getAllCenters() {
         List<DonationCenter> centers = repository.findAll();
         return centers.stream()
-                .map(center -> new DonationCenterNameDTO(center.getName()))
+                .map(center -> new DonationCenterDTO(
+                        center.getCenterId(),
+                        center.getName(),
+                        center.getAddress(),
+                        center.getLatitude(),
+                        center.getLongitude()
+                ))
                 .collect(Collectors.toList());
     }
 }
