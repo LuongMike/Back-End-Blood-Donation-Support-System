@@ -1,6 +1,6 @@
 package com.example.backend_blood_donation_system.controller;
 
-import com.example.backend_blood_donation_system.dto.DonationCenterNameDTO;
+import com.example.backend_blood_donation_system.dto.DonationCenterDTO;
 import com.example.backend_blood_donation_system.service.DonationCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ public class DonationCenterController {
     private DonationCenterService service;
 
     @GetMapping("/names")
-    public List<DonationCenterNameDTO> getAllDonationCenterNames() {
-        return service.getAllDonationCenterNames();
+    public List<DonationCenterDTO> getAllCenters() {
+        return service.getAllCenters();
     }
 }
