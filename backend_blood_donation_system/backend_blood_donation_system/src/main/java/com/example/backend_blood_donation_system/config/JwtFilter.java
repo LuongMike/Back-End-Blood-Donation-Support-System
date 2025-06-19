@@ -31,9 +31,9 @@ public class JwtFilter extends OncePerRequestFilter {
         // Bỏ qua filter cho các endpoint public
         if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/register")) {
             filterChain.doFilter(request, response);
-        return;
+            return;
         }
-        
+
         String token = request.getHeader("Authorization");
         String tokenValue = null;
 
