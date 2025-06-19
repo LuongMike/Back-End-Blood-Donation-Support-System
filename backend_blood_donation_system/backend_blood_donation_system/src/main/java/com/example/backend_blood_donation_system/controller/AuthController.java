@@ -35,7 +35,9 @@ public class AuthController {
         var userOpt = authService.login(login, password);
         if (userOpt.isPresent()) {
             var user = userOpt.get();
-            String token = jwtService.generateToken(user.getUsername(), user.getRole());
+
+            String token = jwtService.generateToken(user.getUserId(),user.getUsername(), user.getRole());
+          
             return ResponseEntity.ok(new LoginResponse(true, "Đăng nhập thành công", token, userOpt.get()));
         } else {
             return ResponseEntity.status(401).body(new LoginResponse(false, "Sai email hoặc mật khẩu", null,null));
