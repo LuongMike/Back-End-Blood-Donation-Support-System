@@ -1,5 +1,12 @@
 package com.example.backend_blood_donation_system.service;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.backend_blood_donation_system.dto.AppointmentRequestDTO;
 import com.example.backend_blood_donation_system.entity.Appointment;
 import com.example.backend_blood_donation_system.entity.DonationCenter;
@@ -7,10 +14,6 @@ import com.example.backend_blood_donation_system.entity.User;
 import com.example.backend_blood_donation_system.repository.AppointmentRepository;
 import com.example.backend_blood_donation_system.repository.DonationCenterRepository;
 import com.example.backend_blood_donation_system.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.sql.Date;
 
 @Service
 public class AppointmentService {
@@ -40,6 +43,15 @@ public class AppointmentService {
         appointment.setStatus("PENDING");
 
         return appointmentRepository.save(appointment);
+    }
+
+    // Phương thức để lấy tất cả các cuộc hẹn
+    public List<Appointment> getAllAppointments() {
+        return appointmentRepository.findAll();
+    }
+
+    public List<Appointment> getAppointmentsByDate(LocalDate date) {
+        return appointmentRepository.findByScheduledDate(Date.valueOf(date)); // chuyển từ LocalDate -> java.sql.Date
     }
 }
 

@@ -1,6 +1,12 @@
 package com.example.backend_blood_donation_system.repository;
-import com.example.backend_blood_donation_system.entity.Appointment;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AppointmentRepository extends JpaRepository<   Appointment, Integer> {
+import com.example.backend_blood_donation_system.entity.Appointment;
+
+public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
+    List<Appointment> findByScheduledDate(Date scheduledDate);
+
 }
