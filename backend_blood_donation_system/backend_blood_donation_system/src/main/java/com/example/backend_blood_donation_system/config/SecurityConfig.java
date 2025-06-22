@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import static org.springframework.security.config.Customizer.withDefaults;
-
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,8 +32,10 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/DonationCenter").permitAll() // Cho phép lấy danh sách trung tâm mà không cần login
+                        .requestMatchers("/api/auth/**").permitAll() // Cho phép lấy danh sách trung tâm mà không cần login
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        // THÊM DÒNG NÀY: Cho phép user có quyền STAFF truy cập vào /api/staff/**
+                        .requestMatchers("/api/staff/**").hasAuthority("STAFF")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
