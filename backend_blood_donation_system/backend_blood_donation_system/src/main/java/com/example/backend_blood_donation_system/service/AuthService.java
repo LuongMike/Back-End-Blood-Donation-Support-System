@@ -67,8 +67,8 @@ public class AuthService {
             .email(dto.getEmail())
             .password(encodedPassword)  // chưa mã hóa
             .phoneNumber(dto.getPhoneNumber())
-            .gender(null)      // chưa có dữ liệu, để null
-            .address(null)     // chưa có dữ liệu, để null
+            .gender(dto.getGender())      // chưa có dữ liệu, để null
+            .address(dto.getAddress())     // chưa có dữ liệu, để null
             .role("MEMBER")      // mặc định role USER
             .createdAt(LocalDateTime.now())
             .status("Active")  // mặc định trạng thái là Active

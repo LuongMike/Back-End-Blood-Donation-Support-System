@@ -27,6 +27,17 @@ public class UserRegistrationDTO {
                 message = "Mật khẩu phải chứa ít nhất một chữ cái viết hoa, một chữ cái viết thường, một số và một ký tự đặc biệt")
         private String password;
 
+        @NotBlank(message = "Giới tính không được để trống")
+        @Pattern(regexp = "^(Nam|Nữ|Khác)$", message = "Giới tính phải là 'Nam', 'Nữ' hoặc 'Khác'")
+        @Size(max = 10, message = "Giới tính không được vượt quá 10 ký tự")
+        private String gender;
+
+        @NotBlank(message = "Địa chỉ không được để trống")
+        @Size(max = 255, message = "Địa chỉ không được vượt quá 255 ký tự")
+        @Pattern(regexp = "^[\\p{L}\\s\\d,.-]+$", message = "Địa chỉ chỉ được chứa chữ cái, số, dấu phẩy, dấu chấm và dấu gạch nối")
+        @Size(min = 5, max = 255, message = "Địa chỉ phải có độ dài từ 5 đến 255 ký tự")
+        private String address;
+
         @NotBlank(message = "Xác nhận mật khẩu không được để trống")
         @Size(min = 6, max = 20, message = "Xác nhận mật khẩu phải có độ dài từ 6 đến 20 ký tự")
         @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,20}$", 
