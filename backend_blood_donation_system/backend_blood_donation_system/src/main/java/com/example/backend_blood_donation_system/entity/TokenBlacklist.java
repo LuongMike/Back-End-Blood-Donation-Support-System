@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "\"token_blacklist\"", schema = "dbo")
+@Table(name = "TokenBlacklist")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "\"User\"", schema = "dbo") // escape tên bảng User với dấu "
+@Table(name = "\"Users\"", schema = "dbo") // escape tên bảng User với dấu "
 @Getter
 @Setter
 @NoArgsConstructor
