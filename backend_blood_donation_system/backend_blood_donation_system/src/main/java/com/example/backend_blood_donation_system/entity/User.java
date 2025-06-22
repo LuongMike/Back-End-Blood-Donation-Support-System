@@ -56,7 +56,7 @@ public class User {
     @NotBlank(message = "Phone number is required")
     @Size(min = 10, max = 15, message = "Phone number must be between 10 and 15 characters")
     @Column(name = "phone_number")
-    private String phoneNumber;
+    private String phoneNumber; 
 
     @NotBlank(message = "Role is required")
     @Column(name = "role")
