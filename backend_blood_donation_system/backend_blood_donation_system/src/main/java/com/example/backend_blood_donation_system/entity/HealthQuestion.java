@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "HealthQuestion", schema = "dbo") // escape tên bảng HealthQuestion với dấu "
+@Table(name = "HealthQuestion", schema = "dbo") 
 @Getter
 @Setter
 @NoArgsConstructor

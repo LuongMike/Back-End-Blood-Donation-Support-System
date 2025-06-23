@@ -21,4 +21,18 @@ public class HealthQuestionService {
     public HealthQuestion createQuestion(HealthQuestion question) {
         return healthQuestionRepository.save(question);
     }
+
+    public HealthQuestion updateQuestion(Integer id, HealthQuestion question) {
+        HealthQuestion existingQuestion = healthQuestionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy câu hỏi có id là : " + id));
+                existingQuestion.setQuestionText(question.getQuestionText());
+                return healthQuestionRepository.save(existingQuestion);
+    }
+
+    public void deleteQuestion(Integer id) {
+        if (!healthQuestionRepository.existsById(id)) {
+            throw new RuntimeException("Không tìm thấy câu hỏi có id là : " + id);
+        }
+        healthQuestionRepository.deleteById(id);
+    }
 }
