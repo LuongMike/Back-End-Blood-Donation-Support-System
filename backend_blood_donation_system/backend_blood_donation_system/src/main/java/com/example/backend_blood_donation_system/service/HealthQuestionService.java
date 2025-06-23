@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.backend_blood_donation_system.dto.HealthQuestionUpdateDTO;
 import com.example.backend_blood_donation_system.entity.HealthQuestion;
 import com.example.backend_blood_donation_system.repository.HealthQuestionRepository;
 
@@ -22,17 +23,22 @@ public class HealthQuestionService {
         return healthQuestionRepository.save(question);
     }
 
-    public HealthQuestion updateQuestion(Integer id, HealthQuestion question) {
-        HealthQuestion existingQuestion = healthQuestionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy câu hỏi có id là : " + id));
-                existingQuestion.setQuestionText(question.getQuestionText());
-                return healthQuestionRepository.save(existingQuestion);
+    public HealthQuestion updateQuestion(HealthQuestionUpdateDTO dto) {
+        HealthQuestion question = healthQuestionRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Câu hỏi không tồn tại"));
+
+        question.setQuestionText(dto.getQuestionText());
+        question.setCorrectAnswer(dto.getCorrectAnswer());
+        question.setIsActive(dto.getIsActive());
+
+        return healthQuestionRepository.save(question);
     }
 
     public void deleteQuestion(Integer id) {
         if (!healthQuestionRepository.existsById(id)) {
-            throw new RuntimeException("Không tìm thấy câu hỏi có id là : " + id);
+            throw new RuntimeException("Câu hỏi không tồn tại");
         }
         healthQuestionRepository.deleteById(id);
     }
+
 }
