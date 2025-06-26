@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface BloodTypeRepository extends JpaRepository<BloodType,Integer> {
+public interface BloodTypeRepository extends JpaRepository<BloodType,Long> {
 
     Optional<BloodType> findByType(String type);
 
