@@ -1,7 +1,9 @@
 package com.example.backend_blood_donation_system.service;
 
+import com.example.backend_blood_donation_system.dto.UserInfoDTO;
 import com.example.backend_blood_donation_system.dto.UserProfileDTO;
 import com.example.backend_blood_donation_system.entity.BloodType;
+import com.example.backend_blood_donation_system.dto.UserInfoDTO;
 import com.example.backend_blood_donation_system.entity.User;
 import com.example.backend_blood_donation_system.entity.UserProfile;
 import com.example.backend_blood_donation_system.repository.BloodTypeRepository;
@@ -66,6 +68,15 @@ public class UserService {
         }
 
         userProfileRepository.save(profile);
+    }
+    public UserInfoDTO getUserInfo(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        return new UserInfoDTO(
+                user.getUsername(),
+                user.getGender(),
+                user.getPhoneNumber()
+        );
     }
 
 }

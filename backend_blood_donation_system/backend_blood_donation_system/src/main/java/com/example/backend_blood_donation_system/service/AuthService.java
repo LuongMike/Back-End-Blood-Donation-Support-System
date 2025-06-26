@@ -26,13 +26,21 @@ public class AuthService {
     public Optional<User> login(String login, String password) {
         Optional<User> userOpt = userRepository.findByUsernameOrEmail(login);
         if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                return Optional.of(user);
-            }
+        User user = userOpt.get();
+        // Check status active (tùy quy ước chuỗi của bạn, có thể là "Active" hoặc "ACTIVE")
+        if (!"Active".equalsIgnoreCase(user.getStatus().trim())) {
+            // Có thể trả về Optional.empty() hoặc throw exception custom (bị khóa)
+            return Optional.empty();
         }
-        return Optional.empty();
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            return Optional.of(user);
+        }
     }
+    return Optional.empty();
+}
+
+
+
 
     public String registerUser(UserRegistrationDTO dto) {
     // Kiểm tra confirm password
@@ -63,6 +71,7 @@ public class AuthService {
             .address(null)     // chưa có dữ liệu, để null
             .role("MEMBER")      // mặc định role USER
             .createdAt(LocalDateTime.now())
+            .status("Active")  // mặc định trạng thái là Active
             .build();
 
     userRepository.save(newUser);
