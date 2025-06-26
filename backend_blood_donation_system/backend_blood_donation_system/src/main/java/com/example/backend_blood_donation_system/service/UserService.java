@@ -32,7 +32,7 @@ public class UserService {
 
         if (profile != null) {
             dto.setWeight(profile.getWeight());
-            dto.setBloodType(profile.getBloodType() != null ? profile.getBloodType().getType() : null);
+            dto.setBlood_type(profile.getBloodType().getType());
             dto.setHealthStatus(profile.getHealth_status());
         }
 
@@ -61,8 +61,8 @@ public class UserService {
         profile.setWeight(dto.getWeight());
         profile.setHealth_status(dto.getHealthStatus());
 
-        if (dto.getBloodType() != null) {
-            BloodType bloodType = bloodTypeRepository.findByType(dto.getBloodType())
+        if (dto.getBlood_type() != null) {
+            BloodType bloodType = bloodTypeRepository.findByType(dto.getBlood_type())
                     .orElseThrow(() -> new RuntimeException("Invalid blood type"));
             profile.setBloodType(bloodType);
         }
