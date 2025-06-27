@@ -32,14 +32,19 @@ public class SecurityConfig {
                 .cors(withDefaults())
 
                 .authorizeHttpRequests(auth -> auth
+
+                        .requestMatchers("/api/auth/**").permitAll() // Cho phép lấy danh sách trung tâm mà không cần login
                         .requestMatchers(
-                                "/api/auth/**", // API auth
                                 "/api/DonationCenter", // public API
-                                "/ws/**" // ✅ cho phép kết nối WebSocket endpoint
+                                "/ws/**" // cho phép kết nối WebSocket endpoint
                         ).permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        // THÊM DÒNG NÀY: Cho phép user có quyền STAFF truy cập vào /api/staff/**
+                        .requestMatchers("/api/staff/**").hasAuthority("STAFF")
+                        
+                        .anyRequest().authenticated()
+                )
 
-                        .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
