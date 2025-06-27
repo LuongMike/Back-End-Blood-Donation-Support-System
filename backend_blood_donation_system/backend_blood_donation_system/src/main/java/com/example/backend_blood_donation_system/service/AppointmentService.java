@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,6 @@ public class AppointmentService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Lấy DonationCenter mặc định có id = 1
         DonationCenter center = donationCenterRepository.findById(1)
                 .orElseThrow(() -> new RuntimeException("Donation Center not found"));
 
