@@ -33,6 +33,8 @@ public class SecurityConfig {
                 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Cho phép lấy danh sách trung tâm mà không cần login
+                        .requestMatchers("/api/blood-types").permitAll()
+                        .requestMatchers("/api/component-types").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         // THÊM DÒNG NÀY: Cho phép user có quyền STAFF truy cập vào /api/staff/**
                         .requestMatchers("/api/staff/**").hasAuthority("STAFF")
