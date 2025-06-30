@@ -1,16 +1,35 @@
 package com.example.backend_blood_donation_system.entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Table(name = "BloodType")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BloodType {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bloodTypeId;
+    @Column(name = "blood_type_id")
+    private Integer id;
 
-    @Column(unique = true)
+    @Column(name = "type", nullable = false, unique = true)
+    @NotBlank(message = "Blood type cannot be blank")
+    @Size(max = 3, message = "Blood type cannot exceed 3 characters")
+
     private String type;
 }

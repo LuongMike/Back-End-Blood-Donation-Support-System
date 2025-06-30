@@ -1,7 +1,6 @@
 package com.example.backend_blood_donation_system.security;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,14 +12,13 @@ public class CustomUserDetails implements UserDetails {
     private final String role;
     private final Collection<? extends GrantedAuthority> authorities;
 
-
-    public CustomUserDetails(Integer id, String username, String role, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(Integer id, String username, String role,
+                             Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.role = role;
         this.authorities = authorities;
     }
-
 
     public Integer getId() {
         return id;
@@ -32,20 +30,18 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return authorities; // ✅ đã chứa ROLE_ prefix
     }
 
     @Override
     public String getPassword() {
-        return null; // Không cần password vì đã xác thực bằng JWT
+        return null; // vì dùng JWT nên không cần
     }
 
     @Override
     public String getUsername() {
         return username;
     }
-
-    // Các method còn lại trả về mặc định vì không dùng đến
 
     @Override
     public boolean isAccountNonExpired() {

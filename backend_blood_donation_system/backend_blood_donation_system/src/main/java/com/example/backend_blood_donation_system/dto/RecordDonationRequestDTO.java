@@ -9,10 +9,10 @@ public class RecordDonationRequestDTO {
     private Integer appointmentId;
 
     @NotNull(message = "Blood Type ID is required")
-    private Long bloodTypeId;
+    private Integer bloodTypeId;
 
     @NotNull(message = "Component Type ID is required")
-    private Long componentTypeId;
+    private Integer componentTypeId;
 
     @NotNull(message = "Units are required")
     @Positive(message = "Units must be a positive number")
@@ -27,19 +27,19 @@ public class RecordDonationRequestDTO {
         this.appointmentId = appointmentId;
     }
 
-    public Long getBloodTypeId() {
+    public Integer getBloodTypeId() {
         return bloodTypeId;
     }
 
-    public void setBloodTypeId(Long bloodTypeId) {
+    public void setBloodTypeId(Integer bloodTypeId) {
         this.bloodTypeId = bloodTypeId;
     }
 
-    public Long getComponentTypeId() {
+    public Integer getComponentTypeId() {
         return componentTypeId;
     }
 
-    public void setComponentTypeId(Long componentTypeId) {
+    public void setComponentTypeId(Integer componentTypeId) {
         this.componentTypeId = componentTypeId;
     }
 

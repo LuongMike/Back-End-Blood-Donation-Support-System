@@ -36,6 +36,7 @@ public class Appointment {
     @Column(length = 50)
     private String screeningResult;
 
+
     @Column(name = "remarks")
     private String remarks;
 }

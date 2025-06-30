@@ -4,6 +4,9 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
+import java.util.Optional;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +36,6 @@ public class AppointmentService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Lấy DonationCenter mặc định có id = 1
         DonationCenter center = donationCenterRepository.findById(1)
                 .orElseThrow(() -> new RuntimeException("Donation Center not found"));
 
@@ -50,8 +52,32 @@ public class AppointmentService {
         return appointmentRepository.findAll();
     }
 
+
+    // Phương thức để lấy các cuộc hẹn theo ngày
     public List<Appointment> getAppointmentsByDate(LocalDate date) {
         return appointmentRepository.findByScheduledDate(Date.valueOf(date)); // chuyển từ LocalDate -> java.sql.Date
     }
+
+      // Phương thức cập nhật kết quả sàng lọc (Screening)
+      public boolean updateScreeningResult(Integer appointmentId, boolean passed, String remarks) {
+        Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
+        if (optionalAppointment.isPresent()) {
+            Appointment appointment = optionalAppointment.get();
+
+            if (passed) {
+                appointment.setScreeningResult("Passed");
+                appointment.setStatus("APPROVED");
+            } else {
+                appointment.setScreeningResult("Failed");
+                appointment.setStatus("REJECTED");
+            }
+            appointment.setRemarks(remarks);
+            appointmentRepository.save(appointment);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 

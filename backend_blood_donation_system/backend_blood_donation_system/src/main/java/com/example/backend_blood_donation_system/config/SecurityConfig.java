@@ -30,34 +30,42 @@ public class SecurityConfig {
 
                 // Kích hoạt CORS và sử dụng Bean 'corsConfigurationSource' bên dưới
                 .cors(withDefaults())
-                
+
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/api/auth/**").permitAll() // Cho phép lấy danh sách trung tâm mà không cần login
+                        .requestMatchers(
+                                "/api/DonationCenter", // public API
+                                "/ws/**" // cho phép kết nối WebSocket endpoint
+                        ).permitAll()
                         .requestMatchers("/api/blood-types").permitAll()
                         .requestMatchers("/api/component-types").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         // THÊM DÒNG NÀY: Cho phép user có quyền STAFF truy cập vào /api/staff/**
                         .requestMatchers("/api/staff/**").hasAuthority("STAFF")
+                        
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-    
+
     // Bean này sẽ định nghĩa các quy tắc CORS cho Spring Security
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
+
         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Cho phép frontend
+        // configuration.setAllowedOrigins(List.of("http://localhost:5177"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*")); // Cho phép mọi header
         configuration.setAllowCredentials(true);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // Áp dụng cho mọi đường dẫn
-        
+
         return source;
     }
 

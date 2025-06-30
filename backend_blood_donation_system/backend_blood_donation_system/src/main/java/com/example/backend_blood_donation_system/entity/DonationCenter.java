@@ -22,6 +22,7 @@ public class DonationCenter {
     @Column(length = 100)
     private String name;
 
+
     @Column(length = 255)
     private String address;
 

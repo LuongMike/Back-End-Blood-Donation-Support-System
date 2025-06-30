@@ -65,13 +65,13 @@ public class AuthService {
             .username(dto.getUsername())
             .fullName(dto.getFullName())
             .email(dto.getEmail())
-            .password(encodedPassword)  // chưa mã hóa
+            .password(encodedPassword)  
             .phoneNumber(dto.getPhoneNumber())
-            .gender(null)      // chưa có dữ liệu, để null
-            .address(null)     // chưa có dữ liệu, để null
-            .role("MEMBER")      // mặc định role USER
+            .gender(dto.getGender())      
+            .address(dto.getAddress())    
+            .role("MEMBER")      
             .createdAt(LocalDateTime.now())
-            .status("Active")  // mặc định trạng thái là Active
+            .status("Active") 
             .build();
 
     userRepository.save(newUser);

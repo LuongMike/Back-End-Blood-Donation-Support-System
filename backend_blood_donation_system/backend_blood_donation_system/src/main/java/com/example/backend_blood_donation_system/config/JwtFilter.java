@@ -29,7 +29,9 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String path = request.getRequestURI();
         // Bỏ qua filter cho các endpoint public
-        if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/register")) {
+        if (path.startsWith("/api/auth/login") ||
+                path.startsWith("/api/auth/register") ||
+                path.startsWith("/ws")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -41,27 +43,8 @@ public class JwtFilter extends OncePerRequestFilter {
             tokenValue = token.substring(7);
         }
 
-        // if (tokenValue != null && !jwtService.isTokenBlacklisted(tokenValue) && !jwtService.isTokenExpired(tokenValue)) {
-        //     String username = jwtService.extractUsername(tokenValue);
-        //     String role = jwtService.extractRole(tokenValue); // Lấy role từ JWT
-
-        //     // Tạo authorities
-        //     List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
-
-        //     // Tạo Authentication
-        //     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
-
-        //     // Set vào context
-        //     SecurityContextHolder.getContext().setAuthentication(auth);
-
-        //     filterChain.doFilter(request, response);
-        // } else {
-        //     // Token không hợp lệ hoặc bị blacklist
-        //     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        //     response.getWriter().write("Token is invalid or blacklisted");
-        // }
-
-        if (tokenValue != null && !jwtService.isTokenBlacklisted(tokenValue) && !jwtService.isTokenExpired(tokenValue)) {
+        if (tokenValue != null && !jwtService.isTokenBlacklisted(tokenValue)
+                && !jwtService.isTokenExpired(tokenValue)) {
             Integer userId = jwtService.extractUserId(tokenValue);
             String username = jwtService.extractUsername(tokenValue);
             String role = jwtService.extractRole(tokenValue);
@@ -69,14 +52,13 @@ public class JwtFilter extends OncePerRequestFilter {
             List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
             CustomUserDetails userDetails = new CustomUserDetails(userId, username, role, authorities);
 
-            UsernamePasswordAuthenticationToken auth =
-            new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null,
+                    authorities);
 
             SecurityContextHolder.getContext().setAuthentication(auth);
             filterChain.doFilter(request, response);
-        }  else {
-            // Token không hợp lệ hoặc bị blacklist
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.getWriter().write("Token is invalid or blacklisted");
         }
 
