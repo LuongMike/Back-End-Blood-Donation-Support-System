@@ -11,10 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.backend_blood_donation_system.dto.DonationHistoryDTO;
 import com.example.backend_blood_donation_system.dto.RecordDonationRequestDTO;
 import com.example.backend_blood_donation_system.entity.Appointment;
+import com.example.backend_blood_donation_system.entity.BloodInventory;
+import com.example.backend_blood_donation_system.entity.BloodInventoryId;
 import com.example.backend_blood_donation_system.entity.BloodType;
 import com.example.backend_blood_donation_system.entity.ComponentType;
 import com.example.backend_blood_donation_system.entity.DonationHistory;
 import com.example.backend_blood_donation_system.repository.AppointmentRepository;
+import com.example.backend_blood_donation_system.repository.BloodInventoryRepository;
 import com.example.backend_blood_donation_system.repository.BloodTypeRepository;
 import com.example.backend_blood_donation_system.repository.ComponentTypeRepository;
 import com.example.backend_blood_donation_system.repository.DonationHistoryRepository;
@@ -35,6 +38,9 @@ public class DonationHistoryService {
 
     @Autowired
     private ComponentTypeRepository componentTypeRepository;
+
+    @Autowired
+    private BloodInventoryRepository bloodInventoryRepository;
 
     // Lấy tất cả lịch sử và chuyển đổi sang DTO
     public List<DonationHistoryDTO> getAll() {
@@ -90,6 +96,28 @@ public class DonationHistoryService {
         appointment.setStatus("COMPLETED");
         appointmentRepository.save(appointment);
 
+        // --- PHẦN MỚI: CẬP NHẬT KHO MÁU (BLOOD INVENTORY) ---
+        // Tạo ID phức hợp cho kho máu
+        BloodInventoryId inventoryId = new BloodInventoryId(componentType.getId(), bloodType.getId());
+
+        // Tìm bản ghi trong kho, nếu không có thì tạo mới
+        BloodInventory inventoryItem = bloodInventoryRepository.findById(inventoryId)
+                .orElse(new BloodInventory());
+        
+        if (inventoryItem.getId() == null) {
+            // Trường hợp TẠO MỚI
+            inventoryItem.setId(inventoryId);
+            inventoryItem.setUnitsAvailable(requestDTO.getUnits());
+        } else {
+            // Trường hợp CẬP NHẬT (cộng dồn)
+            int currentUnits = inventoryItem.getUnitsAvailable();
+            inventoryItem.setUnitsAvailable(currentUnits + requestDTO.getUnits());
+        }
+        
+        // Lưu lại thay đổi vào kho máu
+        bloodInventoryRepository.save(inventoryItem);
+        // --------------------------------------------------------
+        
         // 7. Chuyển đổi entity đã lưu thành DTO để trả về
         return convertToDTO(savedHistory);
     }
