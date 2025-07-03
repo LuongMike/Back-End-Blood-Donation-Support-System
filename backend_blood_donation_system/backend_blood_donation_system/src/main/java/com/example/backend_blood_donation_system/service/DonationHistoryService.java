@@ -98,7 +98,8 @@ public class DonationHistoryService {
 
         // --- PHẦN MỚI: CẬP NHẬT KHO MÁU (BLOOD INVENTORY) ---
         // Tạo ID phức hợp cho kho máu
-        BloodInventoryId inventoryId = new BloodInventoryId(componentType.getId(), bloodType.getId());
+        // Đoạn code đã được sửa lại cho đúng
+        BloodInventoryId inventoryId = new BloodInventoryId(bloodType.getId(), componentType.getId());
 
         // Tìm bản ghi trong kho, nếu không có thì tạo mới
         BloodInventory inventoryItem = bloodInventoryRepository.findById(inventoryId)

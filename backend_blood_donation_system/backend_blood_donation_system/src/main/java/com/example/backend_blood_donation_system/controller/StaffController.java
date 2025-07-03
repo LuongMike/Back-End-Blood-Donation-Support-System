@@ -21,8 +21,8 @@ import com.example.backend_blood_donation_system.dto.ScreeningRequestDTO;
 import com.example.backend_blood_donation_system.entity.Appointment;
 import com.example.backend_blood_donation_system.entity.BloodInventory;
 import com.example.backend_blood_donation_system.service.AppointmentService;
-import com.example.backend_blood_donation_system.service.DonationHistoryService;
 import com.example.backend_blood_donation_system.service.BloodInventoryService;
+import com.example.backend_blood_donation_system.service.DonationHistoryService;
 
 import jakarta.validation.Valid;
 
