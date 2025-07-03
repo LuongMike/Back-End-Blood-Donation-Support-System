@@ -19,8 +19,10 @@ import com.example.backend_blood_donation_system.dto.DonationHistoryDTO;
 import com.example.backend_blood_donation_system.dto.RecordDonationRequestDTO;
 import com.example.backend_blood_donation_system.dto.ScreeningRequestDTO;
 import com.example.backend_blood_donation_system.entity.Appointment;
+import com.example.backend_blood_donation_system.entity.BloodInventory;
 import com.example.backend_blood_donation_system.service.AppointmentService;
 import com.example.backend_blood_donation_system.service.DonationHistoryService;
+import com.example.backend_blood_donation_system.service.BloodInventoryService;
 
 import jakarta.validation.Valid;
 
@@ -94,6 +96,19 @@ public class StaffController {
         return new ResponseEntity<>(createdDonationHistory, HttpStatus.CREATED);
     }
     // ======================================================================
+    @Autowired
+    private BloodInventoryService bloodInventoryService;
 
+    // ==== KHO MÁU ====
+
+    /**
+     * API lấy toàn bộ dữ liệu kho máu.
+     * GET /api/staff/blood-inventory
+     */
+    @GetMapping("/blood-inventory")
+    public ResponseEntity<List<BloodInventory>> getBloodInventory() {
+        List<BloodInventory> inventories = bloodInventoryService.getAllInventories();
+        return new ResponseEntity<>(inventories, HttpStatus.OK);
+    }
 
 }
