@@ -3,6 +3,9 @@ package com.example.backend_blood_donation_system.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.backend_blood_donation_system.dto.UserProfileRequestDTO;
+import com.example.backend_blood_donation_system.entity.UserProfile;
+import com.example.backend_blood_donation_system.service.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -110,5 +113,19 @@ public class StaffController {
         List<BloodInventory> inventories = bloodInventoryService.getAllInventories();
         return new ResponseEntity<>(inventories, HttpStatus.OK);
     }
+    @Autowired
+    private UserProfileService userProfileService;
 
+    /**
+     * Tạo mới hoặc cập nhật hồ sơ kiểm tra sức khỏe
+     * POST /api/staff/user-profile
+     */
+    @PostMapping("/user-profile")
+    public ResponseEntity<UserProfile> createOrUpdateUserProfile(@RequestBody UserProfileRequestDTO requestDTO) {
+        UserProfile profile = userProfileService.createOrUpdate(requestDTO);
+        return new ResponseEntity<>(profile, HttpStatus.CREATED);
+
+
+
+}
 }
