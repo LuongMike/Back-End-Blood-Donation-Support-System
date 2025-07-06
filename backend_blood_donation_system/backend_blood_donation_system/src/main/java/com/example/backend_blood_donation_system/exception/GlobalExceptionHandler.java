@@ -21,5 +21,12 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
-
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleEntityNotFound(EntityNotFoundException ex) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "Not Found");
+        error.put("message", ex.getMessage());
+        error.put("timestamp", LocalDateTime.now());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 }
