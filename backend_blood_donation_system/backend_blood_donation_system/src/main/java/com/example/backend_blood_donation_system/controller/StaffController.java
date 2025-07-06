@@ -5,27 +5,18 @@ import java.util.List;
 
 import com.example.backend_blood_donation_system.dto.UserProfileRequestDTO;
 import com.example.backend_blood_donation_system.entity.UserProfile;
-import com.example.backend_blood_donation_system.service.UserProfileService;
+import com.example.backend_blood_donation_system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.backend_blood_donation_system.dto.DonationHistoryDTO;
 import com.example.backend_blood_donation_system.dto.RecordDonationRequestDTO;
 import com.example.backend_blood_donation_system.dto.ScreeningRequestDTO;
 import com.example.backend_blood_donation_system.entity.Appointment;
 import com.example.backend_blood_donation_system.entity.BloodInventory;
-import com.example.backend_blood_donation_system.service.AppointmentService;
-import com.example.backend_blood_donation_system.service.BloodInventoryService;
-import com.example.backend_blood_donation_system.service.DonationHistoryService;
 
 import jakarta.validation.Valid;
 
@@ -128,4 +119,22 @@ public class StaffController {
 
 
 }
+    @Autowired
+    private DonationRegistrationService registrationService;
+
+
+
+    // Hủy đơn đăng ký hiến máu
+        @DeleteMapping("/registration/{id}")
+    public ResponseEntity<?> deleteRegistration(@PathVariable Integer id) {
+        registrationService.deleteRegistrationById(id);
+        return ResponseEntity.ok("Deleted registration ID: " + id);
+    }
+
+    // Xóa hồ sơ kiểm tra sức khỏe
+    @DeleteMapping("/user-profile/{userId}")
+    public ResponseEntity<?> deleteUserProfile(@PathVariable Integer userId) {
+        userProfileService.deleteUserProfileByUserId(userId);
+        return ResponseEntity.ok("Deleted user profile for user ID: " + userId);
+    }
 }

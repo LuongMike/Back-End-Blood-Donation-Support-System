@@ -8,6 +8,7 @@ import com.example.backend_blood_donation_system.repository.BloodTypeRepository;
 import com.example.backend_blood_donation_system.repository.UserProfileRepository;
 import com.example.backend_blood_donation_system.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,15 @@ public class UserProfileService {
         profile.setHealthStatus(dto.getHealthStatus());
 
         return userProfileRepository.save(profile);
+    }
+
+
+
+    public void deleteUserProfileByUserId(Integer userId) {
+        if (!userProfileRepository.existsByUser_UserId(userId)) {
+            throw new EntityNotFoundException("User profile not found for user ID: " + userId);
+        }
+        userProfileRepository.deleteByUser_UserId(userId);
     }
 }
 

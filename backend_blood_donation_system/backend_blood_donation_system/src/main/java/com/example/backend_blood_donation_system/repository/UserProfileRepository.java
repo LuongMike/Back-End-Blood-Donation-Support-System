@@ -10,4 +10,6 @@ import com.example.backend_blood_donation_system.entity.UserProfile;
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Integer> {
     Optional<UserProfile> findByUser_UserId(Integer userId);
+    void deleteByUser_UserId(Integer userId);
+    boolean existsByUser_UserId(Integer userId);
 }
