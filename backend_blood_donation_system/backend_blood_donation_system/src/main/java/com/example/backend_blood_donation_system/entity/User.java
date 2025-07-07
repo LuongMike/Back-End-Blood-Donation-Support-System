@@ -70,4 +70,10 @@ public class User {
 
     @Column(name = "status")
     private String status;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
 }
