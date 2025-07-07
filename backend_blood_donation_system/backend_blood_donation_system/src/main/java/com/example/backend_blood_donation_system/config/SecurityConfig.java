@@ -39,11 +39,17 @@ public class SecurityConfig {
                                 "/api/DonationCenter", // public API
                                 "/ws/**" // cho phép kết nối WebSocket endpoint
                         ).permitAll()
+                        .requestMatchers("/api/blood-types").permitAll()
+                        .requestMatchers("/api/component-types").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         // THÊM DÒNG NÀY: Cho phép user có quyền STAFF truy cập vào /api/staff/**
                         .requestMatchers("/api/staff/**").hasAuthority("STAFF")
 
-                        .anyRequest().authenticated())
+
+                        
+                        .anyRequest().authenticated()
+                )
+
 
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -55,9 +61,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Cho
-        // phép frontend
-        configuration.setAllowedOrigins(List.of("http://localhost:5177"));
+
+        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Cho phép frontend
+        // configuration.setAllowedOrigins(List.of("http://localhost:5177"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*")); // Cho phép mọi header
         configuration.setAllowCredentials(true);

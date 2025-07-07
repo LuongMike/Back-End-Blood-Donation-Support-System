@@ -3,6 +3,7 @@ package com.example.backend_blood_donation_system.service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+
 import java.util.Optional;
 
 
@@ -51,6 +52,7 @@ public class AppointmentService {
         return appointmentRepository.findAll();
     }
 
+
     // Phương thức để lấy các cuộc hẹn theo ngày
     public List<Appointment> getAppointmentsByDate(LocalDate date) {
         return appointmentRepository.findByScheduledDate(Date.valueOf(date)); // chuyển từ LocalDate -> java.sql.Date
@@ -76,5 +78,6 @@ public class AppointmentService {
             return false;
         }
     }
+
 }
 

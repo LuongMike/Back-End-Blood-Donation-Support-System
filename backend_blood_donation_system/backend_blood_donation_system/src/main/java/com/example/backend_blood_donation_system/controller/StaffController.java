@@ -15,29 +15,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.backend_blood_donation_system.dto.DonationHistoryDTO;
+import com.example.backend_blood_donation_system.dto.RecordDonationRequestDTO;
 import com.example.backend_blood_donation_system.dto.ScreeningRequestDTO;
 import com.example.backend_blood_donation_system.entity.Appointment;
+import com.example.backend_blood_donation_system.entity.BloodInventory;
 import com.example.backend_blood_donation_system.service.AppointmentService;
+import com.example.backend_blood_donation_system.service.BloodInventoryService;
+import com.example.backend_blood_donation_system.service.DonationHistoryService;
 
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/staff") // Tất cả các API trong controller này sẽ bắt đầu bằng /api/staff
+@RequestMapping("/api/staff")
 public class StaffController {
-     @Autowired
+
+    @Autowired
     private AppointmentService appointmentService;
 
-    // API để lấy tất cả các cuộc hẹn
-    // URL đầy đủ sẽ là: GET /api/staff/appointments
+    @Autowired
+    private DonationHistoryService donationHistoryService;
+
+    // ==== LỊCH HẸN ====
+
+
     @GetMapping("/appointments")
     public List<Appointment> getAllAppointments() {
         return appointmentService.getAllAppointments();
     }
 
-    // API để lấy các cuộc hẹn theo ngày
-    // Ví dụ: GET /api/staff/appointments/by-date")
+
     @GetMapping("/appointments/by-date")
     public List<Appointment> getAppointmentsByDate(
-        @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return appointmentService.getAppointmentsByDate(date);
     }
 
@@ -59,4 +69,46 @@ public class StaffController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Appointment not found.");
         }
     }
+    
+    // ==== LỊCH SỬ HIẾN MÁU ====
+
+    @GetMapping("/donation-history")
+    public List<DonationHistoryDTO> getAllHistories() {
+        return donationHistoryService.getAll();
+    }
+
+    @GetMapping("/donation-history/user/{userId}")
+    public List<DonationHistoryDTO> getHistoriesByUser(@PathVariable Long userId) {
+        return donationHistoryService.getByUserId(userId);
+    }
+
+
+    /**
+     * API để bác sĩ/nhân viên ghi lại một ca hiến máu đã hoàn thành.
+     * Endpoint: POST /api/staff/donation-history/record
+     * Body: { "appointmentId": ..., "bloodTypeId": ..., "componentTypeId": ..., "units": ... }
+     */
+    @PostMapping("/donation-history/record")
+    public ResponseEntity<DonationHistoryDTO> recordCompletedDonation(
+            @Valid @RequestBody RecordDonationRequestDTO requestDTO) {
+        
+        DonationHistoryDTO createdDonationHistory = donationHistoryService.recordDonation(requestDTO);
+        return new ResponseEntity<>(createdDonationHistory, HttpStatus.CREATED);
+    }
+    // ======================================================================
+    @Autowired
+    private BloodInventoryService bloodInventoryService;
+
+    // ==== KHO MÁU ====
+
+    /**
+     * API lấy toàn bộ dữ liệu kho máu.
+     * GET /api/staff/blood-inventory
+     */
+    @GetMapping("/blood-inventory")
+    public ResponseEntity<List<BloodInventory>> getBloodInventory() {
+        List<BloodInventory> inventories = bloodInventoryService.getAllInventories();
+        return new ResponseEntity<>(inventories, HttpStatus.OK);
+    }
+
 }

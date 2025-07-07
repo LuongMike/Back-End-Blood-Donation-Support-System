@@ -30,5 +30,6 @@ public class BloodType {
     @Column(name = "type", nullable = false, unique = true)
     @NotBlank(message = "Blood type cannot be blank")
     @Size(max = 3, message = "Blood type cannot exceed 3 characters")
+
     private String type;
 }
