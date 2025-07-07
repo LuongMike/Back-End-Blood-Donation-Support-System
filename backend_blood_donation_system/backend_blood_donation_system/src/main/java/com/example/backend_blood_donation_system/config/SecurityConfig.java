@@ -33,7 +33,8 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/api/auth/**").permitAll() // Cho phép lấy danh sách trung tâm mà không cần login
+                        .requestMatchers("/api/auth/**").permitAll() // Cho phép lấy danh sách trung tâm mà không cần
+                                                                     // login
                         .requestMatchers(
                                 "/api/DonationCenter", // public API
                                 "/ws/**" // cho phép kết nối WebSocket endpoint
@@ -44,9 +45,11 @@ public class SecurityConfig {
                         // THÊM DÒNG NÀY: Cho phép user có quyền STAFF truy cập vào /api/staff/**
                         .requestMatchers("/api/staff/**").hasAuthority("STAFF")
 
+
                         
                         .anyRequest().authenticated()
                 )
+
 
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -57,6 +60,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
 
         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Cho phép frontend
         // configuration.setAllowedOrigins(List.of("http://localhost:5177"));
