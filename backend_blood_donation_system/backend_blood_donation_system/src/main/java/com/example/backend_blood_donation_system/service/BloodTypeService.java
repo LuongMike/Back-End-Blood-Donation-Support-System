@@ -15,7 +15,7 @@ public class BloodTypeService {
     public List<BloodTypeDTO> getAllBloodTypes() {
         List<BloodType> bloodTypes = bloodTypeRepository.findAll();
         return bloodTypes.stream()
-                .map(b -> new BloodTypeDTO(b.getBlood_type_id(), b.getType()))
+                .map(b -> new BloodTypeDTO(b.getId(), b.getType()))
                 .toList();
     }
 }
