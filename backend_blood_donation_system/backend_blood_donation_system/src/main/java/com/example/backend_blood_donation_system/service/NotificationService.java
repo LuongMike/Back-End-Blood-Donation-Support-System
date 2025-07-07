@@ -39,6 +39,7 @@ public class NotificationService {
         notification.setTitle(request.getTitle());
         notification.setMessage(request.getMessage());
         notification.setCreatedBy(staff);
+        notification.setType(request.getType());
 
         notificationRepository.save(notification);
 
@@ -60,10 +61,13 @@ public class NotificationService {
         return rawList.stream().map(un -> {
             Notification n = un.getNotification();
             NotificationResponse dto = new NotificationResponse();
+            dto.setNotificationId(n.getNotificationId());
             dto.setTitle(n.getTitle());
             dto.setMessage(n.getMessage());
             dto.setCreatedAt(n.getCreatedAt());
             dto.setRead(un.isRead());
+            dto.setType(n.getType());
+            dto.setNotificationId(n.getNotificationId());
             return dto;
         }).collect(Collectors.toList());
     }
