@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BloodTypeDTO {
-    private Long id;
+    private int id;
     private String type;
 }
 
