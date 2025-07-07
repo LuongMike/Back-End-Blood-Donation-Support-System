@@ -17,6 +17,7 @@ public class DonationCenter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "center_id")
     private Integer centerId;
 
     @Column(length = 100)
