@@ -1,33 +1,36 @@
+
 package com.example.backend_blood_donation_system.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-@Entity
-@Table(name = "UserProfile")
+
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
+@Entity
+@Table(name = "user_profile")
 public class UserProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long profile_id;
-
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    private Double weight;
+    @Column(name = "profile_id")
+    private Integer profileId;
 
     @ManyToOne
-    @JoinColumn(name = "blood_type_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "blood_type_id", referencedColumnName = "blood_type_id")
     private BloodType bloodType;
 
-    private LocalDate last_screening_date;
-    private String health_status;
+    @Column(name = "weight", precision = 5, scale = 2)
+    private BigDecimal weight;
 
+    @Column(name = "last_screening_date")
+    private LocalDate lastScreeningDate;
+
+    @Column(name = "health_status")
+    private String healthStatus;
 }
