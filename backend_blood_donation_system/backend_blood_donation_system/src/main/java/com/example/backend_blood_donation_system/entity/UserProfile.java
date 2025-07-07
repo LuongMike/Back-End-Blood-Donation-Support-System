@@ -1,3 +1,4 @@
+
 package com.example.backend_blood_donation_system.entity;
 
 import jakarta.persistence.*;
@@ -33,4 +34,3 @@ public class UserProfile {
     @Column(name = "health_status")
     private String healthStatus;
 }
-

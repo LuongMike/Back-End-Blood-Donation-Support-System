@@ -1,5 +1,13 @@
 package com.example.backend_blood_donation_system.repository;
 
+
+import com.example.backend_blood_donation_system.entity.UserProfile;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
+
+
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +20,8 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Intege
     Optional<UserProfile> findByUser_UserId(Integer userId);
     void deleteByUser_UserId(Integer userId);
     boolean existsByUser_UserId(Integer userId);
+    @Query("SELECT p FROM UserProfile p WHERE p.user.userId = :userId")
+    Optional<UserProfile> findByUserId(Integer userId);
+
+
 }
