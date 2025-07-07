@@ -3,12 +3,14 @@ package com.example.backend_blood_donation_system.service;
 import com.example.backend_blood_donation_system.dto.UserInfoDTO;
 import com.example.backend_blood_donation_system.dto.UserProfileDTO;
 import com.example.backend_blood_donation_system.entity.BloodType;
-import com.example.backend_blood_donation_system.dto.UserInfoDTO;
 import com.example.backend_blood_donation_system.entity.User;
 import com.example.backend_blood_donation_system.entity.UserProfile;
 import com.example.backend_blood_donation_system.repository.BloodTypeRepository;
 import com.example.backend_blood_donation_system.repository.UserProfileRepository;
 import com.example.backend_blood_donation_system.repository.UserRepository;
+
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +33,9 @@ public class UserService {
         dto.setGender(user.getGender());
 
         if (profile != null) {
-            dto.setWeight(profile.getWeight());
+            dto.setWeight(profile.getWeight() != null ? profile.getWeight().doubleValue() : null);
             dto.setBlood_type(profile.getBloodType().getType());
-            dto.setHealthStatus(profile.getHealth_status());
+            dto.setHealthStatus(profile.getHealthStatus());
         }
 
         return dto;
@@ -58,8 +60,8 @@ public class UserService {
             profile.setUser(user);
         }
 
-        profile.setWeight(dto.getWeight());
-        profile.setHealth_status(dto.getHealthStatus());
+        profile.setWeight(dto.getWeight() != null ? BigDecimal.valueOf(dto.getWeight()) : null);
+        profile.setHealthStatus(dto.getHealthStatus());
 
         if (dto.getBlood_type() != null) {
             BloodType bloodType = bloodTypeRepository.findByType(dto.getBlood_type())

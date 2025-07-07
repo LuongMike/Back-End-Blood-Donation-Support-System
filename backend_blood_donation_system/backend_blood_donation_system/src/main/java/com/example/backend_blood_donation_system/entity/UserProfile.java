@@ -7,9 +7,11 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Data
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "user_profile")
+@Data
 public class UserProfile {
 
     @Id
@@ -19,6 +21,7 @@ public class UserProfile {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JsonIgnore // ✅ Đặt ở đây để tránh vòng lặp JSON
     private User user;
 
     @ManyToOne
