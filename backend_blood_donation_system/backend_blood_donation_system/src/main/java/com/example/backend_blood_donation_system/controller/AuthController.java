@@ -1,14 +1,7 @@
 package com.example.backend_blood_donation_system.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.backend_blood_donation_system.dto.UserRegistrationDTO;
+import com.example.backend_blood_donation_system.dto.UserResponseDTO;
 import com.example.backend_blood_donation_system.service.AuthService;
 import com.example.backend_blood_donation_system.service.JwtService;
 
@@ -16,6 +9,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -34,13 +30,37 @@ public class    AuthController {
 
         var userOpt = authService.login(login, password);
         if (userOpt.isPresent()) {
-            var user = userOpt.get();
+            UserResponseDTO user = userOpt.get();
 
-            String token = jwtService.generateToken(user.getUserId(),user.getUsername(), user.getRole());
-          
-            return ResponseEntity.ok(new LoginResponse(true, "Đăng nhập thành công", token, userOpt.get()));
+            String token = jwtService.generateToken(
+                    user.getUserId(),
+                    user.getUsername(),
+                    user.getRole()
+            );
+
+            return ResponseEntity.ok(new LoginResponse(true, "Đăng nhập thành công", token, user));
         } else {
-            return ResponseEntity.status(401).body(new LoginResponse(false, "Sai email hoặc mật khẩu", null,null));
+            return ResponseEntity
+                    .status(401)
+                    .body(new LoginResponse(false, "Sai email hoặc mật khẩu hoặc tài khoản bị khóa", null, null));
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody UserRegistrationDTO dto) {
+        var userOpt = authService.registerUser(dto);
+        if (userOpt.isPresent()) {
+            UserResponseDTO user = userOpt.get();
+
+            String token = jwtService.generateToken(
+                    user.getUserId(),
+                    user.getUsername(),
+                    user.getRole()
+            );
+
+            return ResponseEntity.ok(new LoginResponse(true, "Đăng ký thành công", token, user));
+        } else {
+            return ResponseEntity.badRequest().body(new LoginResponse(false, "Đăng ký thất bại", null, null));
         }
     }
 
@@ -48,25 +68,15 @@ public class    AuthController {
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         String tokenWithoutPrefix = token.startsWith("Bearer ") ? token.substring(7) : token;
         jwtService.blacklistToken(tokenWithoutPrefix);
-        // Logic for logout can be implemented here if needed
         return ResponseEntity.ok("Đăng xuất thành công");
     }
 
-
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody UserRegistrationDTO dto) {
-        String result = authService.registerUser(dto);
-        if (result.equals("User registered successfully!")) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.badRequest().body(result);
-        }
-    }
+    // ======== Inner DTOs ========
 
     @Data
     private static class LoginRequest {
         @NotBlank(message = "Login không được để trống")
-        private String login;      // username hoặc email
+        private String login;  // username hoặc email
 
         @NotBlank(message = "Mật khẩu không được để trống")
         private String password;
