@@ -19,7 +19,7 @@ public class BloodSearchService {
 
     public List<NearbyDonorDTO> findNearbyDonors(double centerLat, double centerLng, double maxDistanceKm,
             String bloodType) {
-        List<User> allDonors = userRepository.findAllByRole("MEMBER").stream()
+        List<User> filteredDonors = userRepository.findAllByRole("MEMBER").stream()
                 .filter(u -> u.getLatitude() != null && u.getLongitude() != null)
                 .filter(u -> DistanceUtil.calculateDistance(centerLat, centerLng, u.getLatitude(),
                         u.getLongitude()) <= maxDistanceKm)
@@ -33,20 +33,19 @@ public class BloodSearchService {
                 })
                 .collect(Collectors.toList());
 
-        return allDonors.stream().map(user -> {
-            var profile = user.getProfile();
-            var bloodTypeValue = profile != null && profile.getBloodType() != null
-                    ? profile.getBloodType().getType()
-                    : null;
-            return new NearbyDonorDTO(
-                    user.getUserId(),
-                    user.getFullName(),
-                    user.getEmail(),
-                    user.getAddress(),
-                    user.getLatitude(),
-                    user.getLongitude(),
-                    bloodTypeValue);
+        return filteredDonors.stream().map(user -> {
+            NearbyDonorDTO dto = new NearbyDonorDTO();
+            dto.setUserId(user.getUserId());
+            dto.setFullName(user.getFullName());
+            dto.setEmail(user.getEmail());
+            dto.setAddress(user.getAddress());
+            dto.setLatitude(user.getLatitude());
+            dto.setLongitude(user.getLongitude());
+            if (user.getProfile() != null && user.getProfile().getBloodType() != null) {
+                dto.setBloodType(user.getProfile().getBloodType().getType());
+            }
+            return dto;
         }).collect(Collectors.toList());
-
     }
+
 }
