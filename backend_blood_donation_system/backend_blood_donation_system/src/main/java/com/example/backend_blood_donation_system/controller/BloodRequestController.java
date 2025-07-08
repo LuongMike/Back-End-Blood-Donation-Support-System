@@ -1,5 +1,7 @@
 package com.example.backend_blood_donation_system.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend_blood_donation_system.dto.BloodRequestDTO;
+import com.example.backend_blood_donation_system.dto.StaffDTO;
 import com.example.backend_blood_donation_system.entity.BloodRequest;
 import com.example.backend_blood_donation_system.entity.BloodRequest.RequestStatus;
+import com.example.backend_blood_donation_system.entity.User;
 import com.example.backend_blood_donation_system.repository.UserRepository;
 import com.example.backend_blood_donation_system.security.CustomUserDetails;
 import com.example.backend_blood_donation_system.service.BloodRequestService;
@@ -53,7 +57,14 @@ public class BloodRequestController {
     @GetMapping("/staffs")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getAllStaffs() {
-        return ResponseEntity.ok(userRepository.findByRole("STAFF"));
+        List<User> staffs = userRepository.findByRole("STAFF");
+    
+    // Chuyển sang DTO để trả dữ liệu gọn và chuẩn
+    List<StaffDTO> staffDTOs = staffs.stream()
+        .map(user -> new StaffDTO(user.getUserId(), user.getFullName()))
+        .toList();
+
+    return ResponseEntity.ok(staffDTOs);
     }
 
     @PutMapping("/{id}/assign")
