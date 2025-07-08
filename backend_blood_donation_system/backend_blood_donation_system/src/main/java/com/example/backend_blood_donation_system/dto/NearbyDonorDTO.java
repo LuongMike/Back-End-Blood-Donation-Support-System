@@ -21,4 +21,5 @@ public class NearbyDonorDTO {
     private Double latitude;
     private Double longitude;
     private String bloodType;
+    private boolean eligible;
 }
