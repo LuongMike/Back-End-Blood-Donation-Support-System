@@ -1,5 +1,10 @@
 package com.example.backend_blood_donation_system.service;
 
+import java.math.BigDecimal;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.backend_blood_donation_system.dto.UserInfoDTO;
 import com.example.backend_blood_donation_system.dto.UserProfileDTO;
 import com.example.backend_blood_donation_system.entity.BloodType;
@@ -9,17 +14,18 @@ import com.example.backend_blood_donation_system.repository.BloodTypeRepository;
 import com.example.backend_blood_donation_system.repository.UserProfileRepository;
 import com.example.backend_blood_donation_system.repository.UserRepository;
 
-import java.math.BigDecimal;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 @Service
 public class UserService {
 
-    @Autowired private UserRepository userRepository;
-    @Autowired private UserProfileRepository userProfileRepository;
-    @Autowired private BloodTypeRepository bloodTypeRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserProfileRepository userProfileRepository;
+    @Autowired
+    private BloodTypeRepository bloodTypeRepository;
+    @Autowired
+    private GeocodingService geocodingService;
+
     public UserProfileDTO getProfile(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -51,6 +57,16 @@ public class UserService {
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setAddress(dto.getAddress());
         user.setGender(dto.getGender());
+
+        // Gọi geocoding để cập nhật tọa độ nếu có địa chỉ mới
+        if (dto.getAddress() != null && !dto.getAddress().isBlank()) {
+            GeocodingService.Coordinates coordinates = geocodingService.getCoordinatesFromAddress(dto.getAddress());
+            if (coordinates != null) {
+                user.setLatitude(coordinates.getLatitude());
+                user.setLongitude(coordinates.getLongitude());
+            }
+        }
+
         userRepository.save(user);
 
         // Cập nhật profile
@@ -71,14 +87,14 @@ public class UserService {
 
         userProfileRepository.save(profile);
     }
+
     public UserInfoDTO getUserInfo(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
         return new UserInfoDTO(
                 user.getUsername(),
                 user.getGender(),
-                user.getPhoneNumber()
-        );
+                user.getPhoneNumber());
     }
 
 }
