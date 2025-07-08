@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 public class NearbyDonorDTO {
     private Integer userId;
     private String fullName;
-    private String bloodType;
+    private String email;
     private String address;
     private Double latitude;
     private Double longitude;
-    private Double distanceInKm;
+    private String bloodType;
 }

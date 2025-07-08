@@ -33,25 +33,5 @@ public class BloodType {
     @Size(max = 3, message = "Blood type cannot exceed 3 characters")
 
     private String type;
-//=======
-//
-//import jakarta.persistence.*;
-//import lombok.AllArgsConstructor;
-//import lombok.Data;
-//import lombok.NoArgsConstructor;
-//
-//@Entity
-//@Table(name = "blood_type")
-//@Data
-//@NoArgsConstructor
-//@AllArgsConstructor
-//public class BloodType {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY) // Hibernate dùng IDENTITY
-//    private Long blood_type_id;
-//
-//    private String type;
-//
-//
-//>>>>>>> Feature-View-User
+
 }

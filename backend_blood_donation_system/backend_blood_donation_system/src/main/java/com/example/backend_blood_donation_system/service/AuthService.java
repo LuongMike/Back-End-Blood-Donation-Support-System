@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.backend_blood_donation_system.dto.UserRegistrationDTO;
+import com.example.backend_blood_donation_system.dto.UserResponseDTO;
 import com.example.backend_blood_donation_system.entity.User;
 import com.example.backend_blood_donation_system.repository.UserRepository;
 
@@ -23,37 +24,35 @@ public class AuthService {
     @Autowired
     private GeocodingService geocodingService;
 
-    public Optional<User> login(String login, String password) {
+    public Optional<UserResponseDTO> login(String login, String password) {
         Optional<User> userOpt = userRepository.findByUsernameOrEmail(login);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            // Check status active (tùy quy ước chuỗi của bạn, có thể là "Active" hoặc
-            // "ACTIVE")
             if (!"Active".equalsIgnoreCase(user.getStatus().trim())) {
                 // Có thể trả về Optional.empty() hoặc throw exception custom (bị khóa)
                 return Optional.empty();
             }
             if (passwordEncoder.matches(password, user.getPassword())) {
-                return Optional.of(user);
+                return Optional.of(convertToDTO(user));
             }
         }
         return Optional.empty();
     }
 
-    public String registerUser(UserRegistrationDTO dto) {
+    public Optional<UserResponseDTO> registerUser(UserRegistrationDTO dto) {
         // Kiểm tra confirm password
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-            return "Password confirmation does not match!";
+            return Optional.empty();
         }
 
         // Kiểm tra tồn tại username
         if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
-            return "Username already exists!";
+            return Optional.empty();
         }
 
         // Kiểm tra tồn tại email
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
-            return "Email already exists!";
+            return Optional.empty();
         }
         // Mã hóa mật khẩu
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
@@ -78,7 +77,21 @@ public class AuthService {
 
         userRepository.save(newUser);
 
-        return "User registered successfully!";
+        return Optional.of(convertToDTO(newUser));
+    }
+
+    private UserResponseDTO convertToDTO(User user) {
+        UserResponseDTO dto = new UserResponseDTO();
+        dto.setUserId(user.getUserId());
+        dto.setUsername(user.getUsername());
+        dto.setFullName(user.getFullName());
+        dto.setEmail(user.getEmail());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setGender(user.getGender());
+        dto.setAddress(user.getAddress());
+        dto.setRole(user.getRole());
+        dto.setStatus(user.getStatus());
+        return dto;
     }
 
 }

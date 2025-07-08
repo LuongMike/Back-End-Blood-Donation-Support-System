@@ -19,7 +19,7 @@ public class UserProfile {
     @Column(name = "profile_id")
     private Integer profileId;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @JsonIgnore // ✅ Đặt ở đây để tránh vòng lặp JSON
     private User user;
