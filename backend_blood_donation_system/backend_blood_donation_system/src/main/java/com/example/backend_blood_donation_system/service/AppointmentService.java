@@ -5,11 +5,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.backend_blood_donation_system.dto.AppointmentDTO;
 import com.example.backend_blood_donation_system.dto.AppointmentRequestDTO;
 import com.example.backend_blood_donation_system.entity.Appointment;
 import com.example.backend_blood_donation_system.entity.DonationCenter;
@@ -48,18 +49,19 @@ public class AppointmentService {
     }
 
     // Phương thức để lấy tất cả các cuộc hẹn
-    public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
+    public List<AppointmentDTO> getAllAppointmentDTOs() {
+        return appointmentRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
-
 
     // Phương thức để lấy các cuộc hẹn theo ngày
     public List<Appointment> getAppointmentsByDate(LocalDate date) {
         return appointmentRepository.findByScheduledDate(Date.valueOf(date)); // chuyển từ LocalDate -> java.sql.Date
     }
 
-      // Phương thức cập nhật kết quả sàng lọc (Screening)
-      public boolean updateScreeningResult(Integer appointmentId, boolean passed, String remarks) {
+    // Phương thức cập nhật kết quả sàng lọc (Screening)
+    public boolean updateScreeningResult(Integer appointmentId, boolean passed, String remarks) {
         Optional<Appointment> optionalAppointment = appointmentRepository.findById(appointmentId);
         if (optionalAppointment.isPresent()) {
             Appointment appointment = optionalAppointment.get();
@@ -79,5 +81,16 @@ public class AppointmentService {
         }
     }
 
-}
+    private AppointmentDTO convertToDTO(Appointment appointment) {
+        AppointmentDTO dto = new AppointmentDTO();
+        dto.setAppointmentId(appointment.getAppointmentId());
+        dto.setUserId(appointment.getUser().getUserId());
+        dto.setCenterId(appointment.getCenter().getCenterId());
+        dto.setScheduledDate(appointment.getScheduledDate().toLocalDate());
+        dto.setStatus(appointment.getStatus());
+        dto.setScreeningResult(appointment.getScreeningResult());
+        dto.setRemarks(appointment.getRemarks());
+        return dto;
+    }
 
+}

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.backend_blood_donation_system.dto.AppointmentDTO;
 import com.example.backend_blood_donation_system.dto.DonationHistoryDTO;
 import com.example.backend_blood_donation_system.dto.RecordDonationRequestDTO;
 import com.example.backend_blood_donation_system.dto.ScreeningRequestDTO;
@@ -43,12 +44,11 @@ public class StaffController {
 
     // ==== LỊCH HẸN ====
 
-
     @GetMapping("/appointments")
-    public List<Appointment> getAllAppointments() {
-        return appointmentService.getAllAppointments();
+    public ResponseEntity<List<AppointmentDTO>> getAllAppointments() {
+        List<AppointmentDTO> dtos = appointmentService.getAllAppointmentDTOs();
+        return ResponseEntity.ok(dtos);
     }
-
 
     @GetMapping("/appointments/by-date")
     public List<Appointment> getAppointmentsByDate(
@@ -74,7 +74,7 @@ public class StaffController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Appointment not found.");
         }
     }
-    
+
     // ==== LỊCH SỬ HIẾN MÁU ====
 
     @GetMapping("/donation-history")
@@ -87,19 +87,20 @@ public class StaffController {
         return donationHistoryService.getByUserId(userId);
     }
 
-
     /**
      * API để bác sĩ/nhân viên ghi lại một ca hiến máu đã hoàn thành.
      * Endpoint: POST /api/staff/donation-history/record
-     * Body: { "appointmentId": ..., "bloodTypeId": ..., "componentTypeId": ..., "units": ... }
+     * Body: { "appointmentId": ..., "bloodTypeId": ..., "componentTypeId": ...,
+     * "units": ... }
      */
     @PostMapping("/donation-history/record")
     public ResponseEntity<DonationHistoryDTO> recordCompletedDonation(
             @Valid @RequestBody RecordDonationRequestDTO requestDTO) {
-        
+
         DonationHistoryDTO createdDonationHistory = donationHistoryService.recordDonation(requestDTO);
         return new ResponseEntity<>(createdDonationHistory, HttpStatus.CREATED);
     }
+
     // ======================================================================
     @Autowired
     private BloodInventoryService bloodInventoryService;
@@ -115,6 +116,7 @@ public class StaffController {
         List<BloodInventory> inventories = bloodInventoryService.getAllInventories();
         return new ResponseEntity<>(inventories, HttpStatus.OK);
     }
+
     @Autowired
     private UserProfileService userProfileService;
 
@@ -127,16 +129,13 @@ public class StaffController {
         UserProfile profile = userProfileService.createOrUpdate(requestDTO);
         return new ResponseEntity<>(profile, HttpStatus.CREATED);
 
+    }
 
-
-}
     @Autowired
     private DonationRegistrationService registrationService;
 
-
-
     // Hủy đơn đăng ký hiến máu
-        @DeleteMapping("/registration/{id}")
+    @DeleteMapping("/registration/{id}")
     public ResponseEntity<?> deleteRegistration(@PathVariable Integer id) {
         registrationService.deleteRegistrationById(id);
         return ResponseEntity.ok("Deleted registration ID: " + id);
