@@ -2,6 +2,8 @@ package com.example.backend_blood_donation_system.service;
 
 import java.util.List;
 
+import com.example.backend_blood_donation_system.dto.BloodInventoryDTO;
+import com.example.backend_blood_donation_system.entity.BloodInventoryId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,5 +20,20 @@ public class BloodInventoryService {
         return bloodInventoryRepository.findAll();
     }
 
+    public void addOrUpdateInventory(BloodInventoryDTO dto) {
+        BloodInventoryId id = new BloodInventoryId(
+
+                dto.getBloodTypeId(),
+                dto.getComponentTypeId()
+        );
+
+        BloodInventory inventory = bloodInventoryRepository.findById(id)
+                .orElse(new BloodInventory());
+
+        inventory.setId(id);
+        inventory.setUnitsAvailable(dto.getUnitsAvailable());
+
+        bloodInventoryRepository.save(inventory);
+    }
 }
 
