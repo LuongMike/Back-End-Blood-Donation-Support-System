@@ -19,7 +19,7 @@ public class Notification {
 
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String message;
 
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -29,5 +29,6 @@ public class Notification {
     private User createdBy;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "type",length = 50)
     private NotificationType type;
 }
