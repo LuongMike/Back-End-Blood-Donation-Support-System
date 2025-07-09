@@ -1,5 +1,10 @@
 package com.example.backend_blood_donation_system.service;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.backend_blood_donation_system.dto.UserProfileRequestDTO;
 import com.example.backend_blood_donation_system.entity.BloodType;
 import com.example.backend_blood_donation_system.entity.User;
@@ -10,10 +15,6 @@ import com.example.backend_blood_donation_system.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserProfileService {
@@ -54,6 +55,12 @@ public class UserProfileService {
             throw new EntityNotFoundException("User profile not found for user ID: " + userId);
         }
         userProfileRepository.deleteByUser_UserId(userId);
+    }
+
+    public UserProfile findProfileByUserId(Integer userId) {
+        // Giả định UserProfileRepository của bạn có phương thức findByUser_UserId
+        return userProfileRepository.findByUser_UserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User profile not found for user ID: " + userId));
     }
 }
 
