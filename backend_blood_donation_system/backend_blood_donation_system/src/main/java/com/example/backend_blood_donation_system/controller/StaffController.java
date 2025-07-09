@@ -3,7 +3,7 @@ package com.example.backend_blood_donation_system.controller;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.example.backend_blood_donation_system.dto.UserProfileRequestDTO;
+import com.example.backend_blood_donation_system.dto.*;
 import com.example.backend_blood_donation_system.entity.UserProfile;
 import com.example.backend_blood_donation_system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.backend_blood_donation_system.dto.DonationHistoryDTO;
-import com.example.backend_blood_donation_system.dto.RecordDonationRequestDTO;
-import com.example.backend_blood_donation_system.dto.ScreeningRequestDTO;
 import com.example.backend_blood_donation_system.entity.Appointment;
 import com.example.backend_blood_donation_system.entity.BloodInventory;
 
@@ -104,6 +101,12 @@ public class StaffController {
         List<BloodInventory> inventories = bloodInventoryService.getAllInventories();
         return new ResponseEntity<>(inventories, HttpStatus.OK);
     }
+    @PostMapping("/blood-inventory")
+    public ResponseEntity<String> addOrUpdateInventory(@Valid @RequestBody BloodInventoryDTO dto) {
+        bloodInventoryService.addOrUpdateInventory(dto);
+        return ResponseEntity.ok("Inventory added or updated successfully.");
+    }
+
     @Autowired
     private UserProfileService userProfileService;
 
