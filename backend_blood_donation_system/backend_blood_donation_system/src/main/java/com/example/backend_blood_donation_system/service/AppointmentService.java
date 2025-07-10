@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.backend_blood_donation_system.dto.AppointmentDTO;
 import com.example.backend_blood_donation_system.dto.AppointmentRequestDTO;
+import com.example.backend_blood_donation_system.dto.CenterSummaryDTO;
+import com.example.backend_blood_donation_system.dto.UserSummaryDTO;
 import com.example.backend_blood_donation_system.entity.Appointment;
 import com.example.backend_blood_donation_system.entity.DonationCenter;
 import com.example.backend_blood_donation_system.entity.User;
@@ -55,10 +57,19 @@ public class AppointmentService {
                 .collect(Collectors.toList());
     }
 
-    // Phương thức để lấy các cuộc hẹn theo ngày
-    public List<Appointment> getAppointmentsByDate(LocalDate date) {
-        return appointmentRepository.findByScheduledDate(Date.valueOf(date)); // chuyển từ LocalDate -> java.sql.Date
+    // // Phương thức để lấy các cuộc hẹn theo ngày
+    // public List<Appointment> getAppointmentsByDate(LocalDate date) {
+    //     return appointmentRepository.findByScheduledDate(Date.valueOf(date)); // chuyển từ LocalDate -> java.sql.Date
+    // }
+
+    // THÊM MỚI: Phương thức lấy các cuộc hẹn DTO theo ngày
+    public List<AppointmentDTO> getAppointmentDTOsByDate(LocalDate date) {
+        Date sqlDate = Date.valueOf(date);
+        return appointmentRepository.findByScheduledDate(sqlDate).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
+
 
     // Phương thức cập nhật kết quả sàng lọc (Screening)
     public boolean updateScreeningResult(Integer appointmentId, boolean passed, String remarks) {
@@ -81,15 +92,31 @@ public class AppointmentService {
         }
     }
 
+    // SỬA LẠI HOÀN TOÀN PHƯƠNG THỨC NÀY
     private AppointmentDTO convertToDTO(Appointment appointment) {
         AppointmentDTO dto = new AppointmentDTO();
         dto.setAppointmentId(appointment.getAppointmentId());
-        dto.setUserId(appointment.getUser().getUserId());
-        dto.setCenterId(appointment.getCenter().getCenterId());
         dto.setScheduledDate(appointment.getScheduledDate().toLocalDate());
         dto.setStatus(appointment.getStatus());
         dto.setScreeningResult(appointment.getScreeningResult());
         dto.setRemarks(appointment.getRemarks());
+
+        // Tạo và điền dữ liệu cho UserSummaryDTO
+        if (appointment.getUser() != null) {
+            UserSummaryDTO userDto = new UserSummaryDTO();
+            userDto.setUserId(appointment.getUser().getUserId());
+            userDto.setFullName(appointment.getUser().getFullName());
+            dto.setUser(userDto);
+        }
+
+        // Tạo và điền dữ liệu cho CenterSummaryDTO
+        if (appointment.getCenter() != null) {
+            CenterSummaryDTO centerDto = new CenterSummaryDTO();
+            centerDto.setCenterId(appointment.getCenter().getCenterId());
+            centerDto.setName(appointment.getCenter().getName());
+            dto.setCenter(centerDto);
+        }
+
         return dto;
     }
 

@@ -50,11 +50,19 @@ public class StaffController {
         return ResponseEntity.ok(dtos);
     }
 
+    // @GetMapping("/appointments/by-date")
+    // public List<Appointment> getAppointmentsByDate(
+    //         @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    //     return appointmentService.getAppointmentsByDate(date);
+    // }
+
     @GetMapping("/appointments/by-date")
-    public List<Appointment> getAppointmentsByDate(
+    public ResponseEntity<List<AppointmentDTO>> getAppointmentsByDate(
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return appointmentService.getAppointmentsByDate(date);
+        List<AppointmentDTO> dtos = appointmentService.getAppointmentDTOsByDate(date);
+        return ResponseEntity.ok(dtos);
     }
+
 
     // API sàng lọc dựa trên JSON Body
     // Ví dụ Postman request:
