@@ -1,6 +1,7 @@
 package com.example.backend_blood_donation_system.entity;
 
 
+import com.example.backend_blood_donation_system.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,7 @@ public class Notification {
 
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String message;
 
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -26,4 +27,8 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type",length = 50)
+    private NotificationType type;
 }
