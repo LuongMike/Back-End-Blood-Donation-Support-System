@@ -12,6 +12,8 @@ import lombok.Setter;
 @Setter
  // class này sẽ chứa các trường cần thiết để tạo khóa chính phức hợp => để tới bảng BloodInvetory
 public class BloodInventoryId implements Serializable {
+    
+    private Integer centerId; 
     private Integer bloodTypeId; // ID của loại máu
     private Integer componentTypeId; // ID của thành phần máu
 
@@ -19,7 +21,8 @@ public class BloodInventoryId implements Serializable {
     public BloodInventoryId() {
     }
     
-    public BloodInventoryId(Integer bloodTypeId, Integer componentTypeId) {
+    public BloodInventoryId(Integer centerId,Integer bloodTypeId, Integer componentTypeId) {
+        this.centerId = centerId; // ID của trung tâm máu
         this.bloodTypeId = bloodTypeId;
         this.componentTypeId = componentTypeId;
     }
@@ -30,13 +33,14 @@ public class BloodInventoryId implements Serializable {
          if (this == o) return true;
          if (o == null || getClass() != o.getClass()) return false;
          BloodInventoryId that = (BloodInventoryId) o;
-         return Objects.equals(componentTypeId, that.componentTypeId) &&
+         return Objects.equals(centerId, that.centerId) &&
+                Objects.equals(componentTypeId, that.componentTypeId) &&
                 Objects.equals(bloodTypeId, that.bloodTypeId);
      }
  
      @Override
      public int hashCode() {
-         return Objects.hash(componentTypeId, bloodTypeId);
+         return Objects.hash(centerId, componentTypeId, bloodTypeId);
      }
      
 }

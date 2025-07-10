@@ -15,6 +15,7 @@ import com.example.backend_blood_donation_system.entity.BloodInventory;
 import com.example.backend_blood_donation_system.entity.BloodInventoryId;
 import com.example.backend_blood_donation_system.entity.BloodType;
 import com.example.backend_blood_donation_system.entity.ComponentType;
+import com.example.backend_blood_donation_system.entity.DonationCenter;
 import com.example.backend_blood_donation_system.entity.DonationHistory;
 import com.example.backend_blood_donation_system.repository.AppointmentRepository;
 import com.example.backend_blood_donation_system.repository.BloodInventoryRepository;
@@ -79,6 +80,11 @@ public class DonationHistoryService {
         ComponentType componentType = componentTypeRepository.findById(requestDTO.getComponentTypeId())
                 .orElseThrow(() -> new EntityNotFoundException("ComponentType not found with id: " + requestDTO.getComponentTypeId()));
 
+        // 4.1 (bổ sung). Lấy đối tượng DonationCenter từ Appointment
+        DonationCenter center = appointment.getCenter();
+        if (center == null) {
+            throw new IllegalStateException("Appointment " + appointment.getAppointmentId() + " has no associated center.");
+        }        
         // 4. Tạo đối tượng DonationHistory mới
         DonationHistory donationHistory = new DonationHistory();
         donationHistory.setAppointment(appointment);
@@ -99,7 +105,7 @@ public class DonationHistoryService {
         // --- PHẦN MỚI: CẬP NHẬT KHO MÁU (BLOOD INVENTORY) ---
         // Tạo ID phức hợp cho kho máu
         // Đoạn code đã được sửa lại cho đúng
-        BloodInventoryId inventoryId = new BloodInventoryId(bloodType.getId(), componentType.getId());
+        BloodInventoryId inventoryId = new BloodInventoryId(center.getCenterId(), bloodType.getId(), componentType.getId());
 
         // Tìm bản ghi trong kho, nếu không có thì tạo mới
         BloodInventory inventoryItem = bloodInventoryRepository.findById(inventoryId)
@@ -107,11 +113,12 @@ public class DonationHistoryService {
         
         if (inventoryItem.getId() == null) {
             // Trường hợp TẠO MỚI
+            inventoryItem.setCenter(center);;
             inventoryItem.setId(inventoryId);
             inventoryItem.setUnitsAvailable(requestDTO.getUnits());
         } else {
             // Trường hợp CẬP NHẬT (cộng dồn)
-            int currentUnits = inventoryItem.getUnitsAvailable();
+            int currentUnits = inventoryItem.getUnitsAvailable() != null ? inventoryItem.getUnitsAvailable() : 0;
             inventoryItem.setUnitsAvailable(currentUnits + requestDTO.getUnits());
         }
         
