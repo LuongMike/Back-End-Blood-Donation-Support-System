@@ -3,7 +3,6 @@ package com.example.backend_blood_donation_system.service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
-
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,7 +38,7 @@ public class AppointmentService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        DonationCenter center = donationCenterRepository.findById(1)
+        DonationCenter center = donationCenterRepository.findById(request.getCenterId())
                 .orElseThrow(() -> new RuntimeException("Donation Center not found"));
 
         appointment.setUser(user);
