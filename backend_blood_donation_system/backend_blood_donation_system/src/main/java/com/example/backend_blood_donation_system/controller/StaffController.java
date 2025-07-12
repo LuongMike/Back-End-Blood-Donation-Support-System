@@ -21,7 +21,6 @@ import com.example.backend_blood_donation_system.dto.DonationHistoryDTO;
 import com.example.backend_blood_donation_system.dto.RecordDonationRequestDTO;
 import com.example.backend_blood_donation_system.dto.ScreeningRequestDTO;
 import com.example.backend_blood_donation_system.dto.UserProfileRequestDTO;
-import com.example.backend_blood_donation_system.entity.Appointment;
 import com.example.backend_blood_donation_system.entity.BloodInventory;
 import com.example.backend_blood_donation_system.entity.UserProfile;
 import com.example.backend_blood_donation_system.service.AppointmentService;
@@ -116,6 +115,17 @@ public class StaffController {
     // ==== KHO MÁU ====
 
     /**
+     * API để bác sĩ/nhân viên cập nhật kho máu.
+     * Endpoint: POST /api/staff/blood-inventory/update
+     * Body: { "bloodTypeId": ..., "componentTypeId": ..., "quantity": ... }
+     */
+    @PostMapping("/blood-inventory/update")
+    public ResponseEntity<BloodInventory> updateBloodInventory(@Valid @RequestBody BloodInventory inventory) {
+        BloodInventory updatedInventory = bloodInventoryService.updateInventory(inventory);
+        return new ResponseEntity<>(updatedInventory, HttpStatus.OK);
+    }
+    
+    /**
      * API lấy toàn bộ dữ liệu kho máu.
      * GET /api/staff/blood-inventory
      */
@@ -125,6 +135,7 @@ public class StaffController {
         return new ResponseEntity<>(inventories, HttpStatus.OK);
     }
 
+    
     @Autowired
     private UserProfileService userProfileService;
 
