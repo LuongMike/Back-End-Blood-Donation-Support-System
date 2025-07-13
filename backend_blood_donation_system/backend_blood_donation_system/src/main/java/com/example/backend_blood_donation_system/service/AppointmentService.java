@@ -20,7 +20,7 @@ import com.example.backend_blood_donation_system.repository.AppointmentRepositor
 import com.example.backend_blood_donation_system.repository.DonationCenterRepository;
 import com.example.backend_blood_donation_system.repository.UserRepository;
 
-@Service
+@Service        
 public class AppointmentService {
 
     @Autowired
