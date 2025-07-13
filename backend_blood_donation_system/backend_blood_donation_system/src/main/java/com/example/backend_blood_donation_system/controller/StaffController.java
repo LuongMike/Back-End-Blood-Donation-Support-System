@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend_blood_donation_system.dto.AppointmentDTO;
+import com.example.backend_blood_donation_system.dto.DashboardStatisticsDTO;
 import com.example.backend_blood_donation_system.dto.DonationHistoryDTO;
 import com.example.backend_blood_donation_system.dto.RecordDonationRequestDTO;
 import com.example.backend_blood_donation_system.dto.ScreeningRequestDTO;
@@ -25,6 +26,7 @@ import com.example.backend_blood_donation_system.entity.BloodInventory;
 import com.example.backend_blood_donation_system.entity.UserProfile;
 import com.example.backend_blood_donation_system.service.AppointmentService;
 import com.example.backend_blood_donation_system.service.BloodInventoryService;
+import com.example.backend_blood_donation_system.service.DashboardService;
 import com.example.backend_blood_donation_system.service.DonationHistoryService;
 import com.example.backend_blood_donation_system.service.DonationRegistrationService;
 import com.example.backend_blood_donation_system.service.UserProfileService;
@@ -171,5 +173,14 @@ public class StaffController {
     public ResponseEntity<UserProfile> getUserProfileByUserId(@PathVariable Integer userId) {
         UserProfile userProfile = userProfileService.findProfileByUserId(userId);
         return ResponseEntity.ok(userProfile);
+    }
+
+     @Autowired
+    private DashboardService dashboardService;
+
+    @GetMapping("/dashboard/statistics")
+    public ResponseEntity<DashboardStatisticsDTO> getStatistics() {
+        DashboardStatisticsDTO statistics = dashboardService.getDashboardStatistics();
+        return ResponseEntity.ok(statistics);
     }
 }
