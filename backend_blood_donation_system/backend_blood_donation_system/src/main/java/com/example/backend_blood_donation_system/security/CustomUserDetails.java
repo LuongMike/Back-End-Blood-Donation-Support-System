@@ -2,6 +2,7 @@ package com.example.backend_blood_donation_system.security;
 
 import java.util.Collection;
 
+import com.example.backend_blood_donation_system.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,13 +12,20 @@ public class CustomUserDetails implements UserDetails {
     private final String username;
     private final String role;
     private final Collection<? extends GrantedAuthority> authorities;
+    private final User user;
 
-    public CustomUserDetails(Integer id, String username, String role,
+
+    public CustomUserDetails(User user,Integer id, String username, String role,
                              Collection<? extends GrantedAuthority> authorities) {
+        this.user = user;
         this.id = id;
         this.username = username;
         this.role = role;
         this.authorities = authorities;
+    }
+
+    public User getUser() {
+        return this.user;
     }
 
     public Integer getId() {
