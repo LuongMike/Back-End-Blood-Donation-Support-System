@@ -137,7 +137,6 @@ public class StaffController {
         return new ResponseEntity<>(inventories, HttpStatus.OK);
     }
 
-    
     @Autowired
     private UserProfileService userProfileService;
 

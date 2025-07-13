@@ -1,9 +1,14 @@
 package com.example.backend_blood_donation_system.dto;
 
-import lombok.Data;
 import java.time.LocalDate;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 @Data
+@Getter
+@Setter
 public class AppointmentDTO {
     private Integer appointmentId;
     
