@@ -49,7 +49,7 @@ public class UserProfileService {
     }
 
 
-
+    @Transactional
     public void deleteUserProfileByUserId(Integer userId) {
         if (!userProfileRepository.existsByUser_UserId(userId)) {
             throw new EntityNotFoundException("User profile not found for user ID: " + userId);
@@ -58,7 +58,7 @@ public class UserProfileService {
     }
 
     public UserProfile findProfileByUserId(Integer userId) {
-        // Giả định UserProfileRepository của bạn có phương thức findByUser_UserId
+
         return userProfileRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User profile not found for user ID: " + userId));
     }
