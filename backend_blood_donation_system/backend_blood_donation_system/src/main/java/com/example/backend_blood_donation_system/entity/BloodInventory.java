@@ -20,5 +20,4 @@ public class BloodInventory {
     @UpdateTimestamp // Tự động cập nhật thời gian mỗi khi bản ghi được sửa đổi
     private LocalDateTime updatedAt;
 
-
 }
