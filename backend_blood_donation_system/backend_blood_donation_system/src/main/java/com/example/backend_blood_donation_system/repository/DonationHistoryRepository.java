@@ -15,7 +15,7 @@ import com.example.backend_blood_donation_system.entity.User;
 
 public interface DonationHistoryRepository extends JpaRepository<DonationHistory, Integer> {
     List<DonationHistory> findByUser_UserId(Long userId);
-
+    List<DonationHistory> findByUser_UserId(Integer userId);
     Optional<DonationHistory> findTopByUserOrderByDonationDateDesc(User user);
 
 
