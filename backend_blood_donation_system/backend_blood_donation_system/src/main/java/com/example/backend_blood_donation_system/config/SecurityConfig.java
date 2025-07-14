@@ -64,7 +64,7 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Cho phép frontend
         // configuration.setAllowedOrigins(List.of("http://localhost:5177"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
         configuration.setAllowedHeaders(List.of("*")); // Cho phép mọi header
         configuration.setAllowCredentials(true);
 

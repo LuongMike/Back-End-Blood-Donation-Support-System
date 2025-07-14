@@ -13,10 +13,10 @@ public class UserProfileDTO {
     private String phoneNumber;
     private String address;
     private String gender;
-    private Double weight;
+//    private Double weight;
 //    @EnumValue(name = "blood_group", enumClass = BloodType.class)
 //@ManyToOne
 //@JoinColumn(name = "blood_type_id")
-    private String blood_type;  // ví dụ: "A+", "O-", ...
-    private String healthStatus;
+//    private String blood_type;  // ví dụ: "A+", "O-", ...
+//    private String healthStatus;
 }

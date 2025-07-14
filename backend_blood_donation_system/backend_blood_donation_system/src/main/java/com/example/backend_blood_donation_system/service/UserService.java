@@ -38,11 +38,11 @@ public class UserService {
         dto.setAddress(user.getAddress());
         dto.setGender(user.getGender());
 
-        if (profile != null) {
-            dto.setWeight(profile.getWeight() != null ? profile.getWeight().doubleValue() : null);
-            dto.setBlood_type(profile.getBloodType().getType());
-            dto.setHealthStatus(profile.getHealthStatus());
-        }
+//        if (profile != null) {
+//            dto.setWeight(profile.getWeight() != null ? profile.getWeight().doubleValue() : null);
+//            dto.setBlood_type(profile.getBloodType().getType());
+//            dto.setHealthStatus(profile.getHealthStatus());
+//        }
 
         return dto;
     }
@@ -76,14 +76,14 @@ public class UserService {
             profile.setUser(user);
         }
 
-        profile.setWeight(dto.getWeight() != null ? BigDecimal.valueOf(dto.getWeight()) : null);
-        profile.setHealthStatus(dto.getHealthStatus());
-
-        if (dto.getBlood_type() != null) {
-            BloodType bloodType = bloodTypeRepository.findByType(dto.getBlood_type())
-                    .orElseThrow(() -> new RuntimeException("Invalid blood type"));
-            profile.setBloodType(bloodType);
-        }
+//        profile.setWeight(dto.getWeight() != null ? BigDecimal.valueOf(dto.getWeight()) : null);
+//        profile.setHealthStatus(dto.getHealthStatus());
+//
+//        if (dto.getBlood_type() != null) {
+//            BloodType bloodType = bloodTypeRepository.findByType(dto.getBlood_type())
+//                    .orElseThrow(() -> new RuntimeException("Invalid blood type"));
+//            profile.setBloodType(bloodType);
+//        }
 
         userProfileRepository.save(profile);
     }

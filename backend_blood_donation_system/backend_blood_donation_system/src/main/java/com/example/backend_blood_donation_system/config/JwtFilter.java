@@ -3,6 +3,8 @@ package com.example.backend_blood_donation_system.config;
 import java.io.IOException;
 import java.util.List;
 
+import com.example.backend_blood_donation_system.entity.User;
+import com.example.backend_blood_donation_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +25,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtService jwtService;
+    @Autowired
+    private UserRepository userRepository;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -49,8 +54,16 @@ public class JwtFilter extends OncePerRequestFilter {
             String username = jwtService.extractUsername(tokenValue);
             String role = jwtService.extractRole(tokenValue);
 
+            User user = userRepository.findById(userId).orElse(null);
+            if (user == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("User not found");
+                return;
+            }
+
+
             List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
-            CustomUserDetails userDetails = new CustomUserDetails(userId, username, role, authorities);
+            CustomUserDetails userDetails = new CustomUserDetails(user,userId, username, role, authorities);
 
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null,
                     authorities);

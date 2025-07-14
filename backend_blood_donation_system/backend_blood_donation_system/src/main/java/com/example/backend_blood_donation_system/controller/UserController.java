@@ -38,15 +38,20 @@ public class UserController {
     private BloodTypeService bloodTypeService;
 
 
-    @GetMapping("/{id}/profile")
-    public ResponseEntity<UserProfileDTO> getProfile(@PathVariable int id) {
-        return ResponseEntity.ok(userService.getProfile(id));
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileDTO> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        int userId = userDetails.getUser().getUserId();
+        UserProfileDTO dto = userService.getProfile(userId);
+        return ResponseEntity.ok(dto);
     }
 
-    @PatchMapping("/{id}/profile")
+    @PatchMapping("/profile")
+    public ResponseEntity<String> updateProfile(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody UserProfileDTO dto) {
 
-    public ResponseEntity<String> updateProfile(@PathVariable int id, @RequestBody UserProfileDTO dto) {
-        userService.updateProfile(id, dto);
+        int userId = userDetails.getUser().getUserId();
+        userService.updateProfile(userId, dto);
         return ResponseEntity.ok("Profile updated successfully");
     }
     @GetMapping("/{id}/info")

@@ -21,6 +21,12 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequest, Inte
 
      List<BloodRequest> findByAssignedStaffUserId(Integer staffId);
 
+
+    // MỚI: Đếm các yêu cầu khẩn cấp và chưa hoàn thành hoặc bị từ chối
+    @Query("SELECT COUNT(br) FROM BloodRequest br WHERE br.type = 'URGENT' AND br.status NOT IN ('COMPLETED', 'REJECTED')")
+    long countUrgentAndActiveRequests();
+
+
      long countByStatus(BloodRequest.RequestStatus status);
 
      @Query("SELECT new com.example.backend_blood_donation_system.dto.ChartDataDTO(" +
@@ -31,4 +37,5 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequest, Inte
            "GROUP BY FORMAT(br.requestTime, 'yyyy-MM') " + // <-- Sửa tên trường
            "ORDER BY FORMAT(br.requestTime, 'yyyy-MM') ASC") // <-- Sửa tên trường
     List<ChartDataDTO> countRequestsByMonth(@Param("startDate") LocalDateTime startDate);
+
 }
