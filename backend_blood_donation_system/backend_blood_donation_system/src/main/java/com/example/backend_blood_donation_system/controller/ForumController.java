@@ -38,4 +38,8 @@ public class ForumController {
     public ForumTopic createTopic(@RequestBody ForumTopicDTO dto) {
         return topicService.createTopic(dto);
     }
+    @DeleteMapping("/admin/forum/topics/{id}")
+    public void deleteTopic(@PathVariable Long id) {
+        topicService.deleteTopic(id);
+    }
 }
