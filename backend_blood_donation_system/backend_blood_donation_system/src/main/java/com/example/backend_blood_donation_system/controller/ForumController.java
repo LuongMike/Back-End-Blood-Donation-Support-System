@@ -1,6 +1,7 @@
 package com.example.backend_blood_donation_system.controller;
 
 import com.example.backend_blood_donation_system.dto.ForumPostDTO;
+import com.example.backend_blood_donation_system.dto.ForumTopicDTO;
 import com.example.backend_blood_donation_system.entity.ForumPost;
 import com.example.backend_blood_donation_system.entity.ForumTopic;
 import com.example.backend_blood_donation_system.service.ForumPostService;
@@ -32,5 +33,9 @@ public class ForumController {
     public ForumPost createPost(@RequestBody ForumPostDTO dto) {
         return postService.createPost(dto);
     }
-
+    // ========== ADMIN ==========
+    @PostMapping("/admin/forum/topics")
+    public ForumTopic createTopic(@RequestBody ForumTopicDTO dto) {
+        return topicService.createTopic(dto);
+    }
 }
