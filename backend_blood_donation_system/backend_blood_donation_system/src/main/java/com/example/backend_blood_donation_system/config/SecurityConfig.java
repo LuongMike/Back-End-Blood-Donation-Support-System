@@ -45,6 +45,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         // THÊM DÒNG NÀY: Cho phép user có quyền STAFF truy cập vào /api/staff/**
                         .requestMatchers("/api/staff/**").hasAuthority("STAFF")
+                        .requestMatchers("/api/forum/**").permitAll()
+                        .requestMatchers("/api/member/**").hasAuthority("MEMBER")
 
 
                         
