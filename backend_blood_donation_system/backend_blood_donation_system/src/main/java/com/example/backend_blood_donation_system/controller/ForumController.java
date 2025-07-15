@@ -42,4 +42,8 @@ public class ForumController {
     public void deleteTopic(@PathVariable Long id) {
         topicService.deleteTopic(id);
     }
+    @PutMapping("/admin/forum/posts/{id}/hide")
+    public void hidePost(@PathVariable Long id) {
+        postService.hidePost(id);
+    }
 }
