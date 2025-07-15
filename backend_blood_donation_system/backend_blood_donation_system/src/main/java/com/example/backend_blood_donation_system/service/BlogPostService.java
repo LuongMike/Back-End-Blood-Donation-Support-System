@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import com.example.backend_blood_donation_system.dto.BlogPostRequest;
+import com.example.backend_blood_donation_system.dto.BlogPostResponse;
 import com.example.backend_blood_donation_system.entity.BlogPost;
 import com.example.backend_blood_donation_system.entity.User;
 import com.example.backend_blood_donation_system.repository.BlogPostRepository;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +23,7 @@ import com.example.backend_blood_donation_system.enums.PostType;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,5 +57,21 @@ public class BlogPostService {
         }
 
         blogPostRepository.save(post);
+    }
+    public List<BlogPostResponse> getAllPosts() {
+        List<BlogPost> posts = blogPostRepository.findAll();
+
+        return posts.stream().map(post -> {
+            BlogPostResponse dto = new BlogPostResponse();
+            dto.setPostId(post.getPostId());
+            dto.setTitle(post.getTitle());
+            dto.setContent(post.getContent());
+            dto.setImage(post.getImage());
+            dto.setType(post.getType());
+            dto.setAuthorName(post.getAuthor().getFullName()); // giả sử User có fullName
+            dto.setCreatedAt(post.getCreatedAt());
+            dto.setUpdatedAt(post.getUpdatedAt());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }
