@@ -39,4 +39,11 @@ public class BlogPostController {
         List<BlogPostResponse> posts = blogPostService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
+
+    @PreAuthorize("hasAuthority('STAFF')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable("id") Integer postId) {
+        blogPostService.deletePost(postId);
+        return ResponseEntity.ok("Đã xóa bài viết thành công với ID: " + postId);
+    }
 }

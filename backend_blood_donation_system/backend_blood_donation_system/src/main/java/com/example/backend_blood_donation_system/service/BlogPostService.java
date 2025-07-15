@@ -74,4 +74,11 @@ public class BlogPostService {
             return dto;
         }).collect(Collectors.toList());
     }
+    public void deletePost(Integer postId) {
+        if (!blogPostRepository.existsById(postId)) {
+            throw new RuntimeException("Bài viết không tồn tại với ID: " + postId);
+        }
+        blogPostRepository.deleteById(postId);
+    }
+
 }
