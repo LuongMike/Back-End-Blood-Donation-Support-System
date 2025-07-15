@@ -1,29 +1,24 @@
 package com.example.backend_blood_donation_system.service;
 
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import com.example.backend_blood_donation_system.dto.BlogPostRequest;
-import com.example.backend_blood_donation_system.dto.BlogPostResponse;
-import com.example.backend_blood_donation_system.entity.BlogPost;
-import com.example.backend_blood_donation_system.entity.User;
-import com.example.backend_blood_donation_system.repository.BlogPostRepository;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.backend_blood_donation_system.dto.BlogPostResponse;
+import com.example.backend_blood_donation_system.entity.BlogPost;
+import com.example.backend_blood_donation_system.entity.User;
 import com.example.backend_blood_donation_system.enums.PostType;
+import com.example.backend_blood_donation_system.repository.BlogPostRepository;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -81,4 +76,22 @@ public class BlogPostService {
         blogPostRepository.deleteById(postId);
     }
 
+    public BlogPostResponse getPostById(Integer postId) {
+        // Tìm bài viết hoặc ném ra lỗi nếu không tồn tại
+        BlogPost post = blogPostRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy bài viết với ID: " + postId));
+
+        // Chuyển đổi Entity sang DTO để trả về cho client
+        BlogPostResponse dto = new BlogPostResponse();
+        dto.setPostId(post.getPostId());
+        dto.setTitle(post.getTitle());
+        dto.setContent(post.getContent());
+        dto.setImage(post.getImage());
+        dto.setType(post.getType());
+        dto.setAuthorName(post.getAuthor().getFullName()); // Đảm bảo User entity có getFullName()
+        dto.setCreatedAt(post.getCreatedAt());
+        dto.setUpdatedAt(post.getUpdatedAt());
+
+        return dto;
+    }
 }

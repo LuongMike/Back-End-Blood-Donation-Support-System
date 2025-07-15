@@ -51,4 +51,10 @@ public class BlogPostController {
         blogPostService.deletePost(postId);
         return ResponseEntity.ok("Đã xóa bài viết thành công với ID: " + postId);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BlogPostResponse> getPostById(@PathVariable("id") Integer postId) {
+        BlogPostResponse post = blogPostService.getPostById(postId);
+        return ResponseEntity.ok(post);
+    }
 }
