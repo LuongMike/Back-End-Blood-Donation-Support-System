@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 "/api/DonationCenter", // public API
                                 "/ws/**" // cho phép kết nối WebSocket endpoint
                         ).permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/blood-types").permitAll()
                         .requestMatchers("/api/component-types").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
