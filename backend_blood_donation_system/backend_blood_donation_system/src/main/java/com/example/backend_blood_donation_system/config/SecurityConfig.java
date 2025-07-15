@@ -37,7 +37,8 @@ public class SecurityConfig {
                                                                      // login
                         .requestMatchers(
                                 "/api/DonationCenter", // public API
-                                "/ws/**" // cho phép kết nối WebSocket endpoint
+                                "/ws/**", // cho phép kết nối WebSocket endpoint
+                                 "/api/public/certificate/verify/{code}" 
                         ).permitAll()
                         .requestMatchers("/api/blood-types").permitAll()
                         .requestMatchers("/api/component-types").permitAll()
