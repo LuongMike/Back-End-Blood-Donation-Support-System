@@ -2,9 +2,7 @@
 
 package com.example.backend_blood_donation_system.entity;
 
-import org.hibernate.annotations.Nationalized; // <<<<< IMPORT THÊM DÒNG NÀY
-
-import jakarta.persistence.Column;
+import jakarta.persistence.Column; // <<<<< IMPORT THÊM DÒNG NÀY
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,15 +29,13 @@ public class ComponentType {
     @Column(name = "component_type_id")
     private Integer id;
 
-    // === SỬA ĐỔI TẠI ĐÂY ===
-    @Nationalized // Dùng annotation này thay cho columnDefinition
+
     @Column(name = "name", nullable = false, unique = true)
     @NotBlank(message = "Component type name cannot be blank")
     @Size(max = 100, message = "Component type name cannot exceed 100 characters")
     private String name;
 
-    // === SỬA ĐỔI TẠI ĐÂY ===
-    @Nationalized // Dùng annotation này thay cho columnDefinition
+
     @Column(name = "description")
     @Size(max = 255, message = "Description cannot exceed 255 characters")
     private String description;

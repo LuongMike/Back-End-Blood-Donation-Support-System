@@ -67,3 +67,5 @@ buildNumber.properties
 
 ### IntelliJ IDEA ###
 .idea/
+# Thư mục chứa các file PDF chứng nhận được tạo ra
+certificates-storage/

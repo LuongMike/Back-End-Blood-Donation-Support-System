@@ -33,10 +33,12 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/api/auth/**").permitAll() // Cho phép lấy danh sách trung tâm mà không cần login
+                        .requestMatchers("/api/auth/**").permitAll() // Cho phép lấy danh sách trung tâm mà không cần
+                                                                     // login
                         .requestMatchers(
                                 "/api/DonationCenter", // public API
-                                "/ws/**" // cho phép kết nối WebSocket endpoint
+                                "/ws/**", // cho phép kết nối WebSocket endpoint
+                                 "/api/public/certificate/verify/{code}" 
                         ).permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/blood-types").permitAll()
@@ -44,10 +46,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         // THÊM DÒNG NÀY: Cho phép user có quyền STAFF truy cập vào /api/staff/**
                         .requestMatchers("/api/staff/**").hasAuthority("STAFF")
+                        .requestMatchers("/api/forum/**").permitAll()
+                        .requestMatchers("/api/member/**").hasAuthority("MEMBER")
+
 
                         
                         .anyRequest().authenticated()
                 )
+
 
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -59,9 +65,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
+
         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Cho phép frontend
         // configuration.setAllowedOrigins(List.of("http://localhost:5177"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
         configuration.setAllowedHeaders(List.of("*")); // Cho phép mọi header
         configuration.setAllowCredentials(true);
 

@@ -14,9 +14,14 @@ public class BloodInventoryService {
     @Autowired
     private BloodInventoryRepository bloodInventoryRepository;
 
+    
+
     public List<BloodInventory> getAllInventories() {
         return bloodInventoryRepository.findAll();
     }
 
+    public BloodInventory updateInventory(BloodInventory inventory) {
+        return bloodInventoryRepository.save(inventory);
+    }
 }
 
