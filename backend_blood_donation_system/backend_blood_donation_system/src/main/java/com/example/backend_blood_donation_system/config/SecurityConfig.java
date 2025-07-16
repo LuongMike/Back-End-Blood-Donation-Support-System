@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 "/ws/**", // cho phép kết nối WebSocket endpoint
                                  "/api/public/certificate/verify/{code}" 
                         ).permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/blood-types").permitAll()
                         .requestMatchers("/api/component-types").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
