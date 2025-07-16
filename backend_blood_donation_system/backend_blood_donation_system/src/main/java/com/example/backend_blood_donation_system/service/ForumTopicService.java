@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +22,25 @@ public class ForumTopicService {
         return topicRepo.save(topic);
     }
 
-    public List<ForumTopic> getAllTopics() {
-        return topicRepo.findAll();
+    public List<ForumTopicDTO> getAllTopics() {
+        return topicRepo.findAll().stream()
+                .map(this::convertToTopicDto)
+                .collect(Collectors.toList());
     }
 
     public void deleteTopic(Long id) {
         topicRepo.deleteById(id);
+    }
+
+        private ForumTopicDTO convertToTopicDto(ForumTopic topic) {
+        return new ForumTopicDTO(
+            topic.getId(),
+            topic.getTitle(),
+            topic.getDescription(),
+            topic.getCreatedBy(),
+            topic.getCreatedAt(),
+            topic.getPosts() != null ? topic.getPosts().size() : 0 
+        );
     }
 }
 

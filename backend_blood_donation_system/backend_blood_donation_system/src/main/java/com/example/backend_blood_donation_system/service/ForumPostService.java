@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +29,10 @@ public class ForumPostService {
         return postRepo.save(post);
     }
 
-    public List<ForumPost> getVisiblePosts(Long topicId) {
-        return postRepo.findByTopicIdAndVisibleTrue(topicId);
+    public List<ForumPostDTO> getVisiblePosts(Long topicId) {
+        return postRepo.findByTopicIdAndVisibleTrue(topicId).stream()
+                .map(this::convertToPostDto)
+                .collect(Collectors.toList());
     }
 
     public void hidePost(Long postId) {
@@ -37,6 +40,17 @@ public class ForumPostService {
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         post.setVisible(false);
         postRepo.save(post);
+    }
+
+        private ForumPostDTO convertToPostDto(ForumPost post) {
+        return new ForumPostDTO(
+            post.getId(),
+            post.getTopic().getId(),
+            post.getContent(),
+            post.getAuthorId(),
+            post.getVisible(),
+            post.getCreatedAt()
+        );
     }
 }
 
