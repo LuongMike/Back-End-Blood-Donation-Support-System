@@ -37,13 +37,17 @@ public class SecurityConfig {
                                                                      // login
                         .requestMatchers(
                                 "/api/DonationCenter", // public API
-                                "/ws/**" // cho phép kết nối WebSocket endpoint
+                                "/ws/**", // cho phép kết nối WebSocket endpoint
+                                 "/api/public/certificate/verify/{code}" 
                         ).permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/blood-types").permitAll()
                         .requestMatchers("/api/component-types").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         // THÊM DÒNG NÀY: Cho phép user có quyền STAFF truy cập vào /api/staff/**
                         .requestMatchers("/api/staff/**").hasAuthority("STAFF")
+                        .requestMatchers("/api/forum/**").permitAll()
+                        .requestMatchers("/api/member/**").hasAuthority("MEMBER")
 
 
                         
