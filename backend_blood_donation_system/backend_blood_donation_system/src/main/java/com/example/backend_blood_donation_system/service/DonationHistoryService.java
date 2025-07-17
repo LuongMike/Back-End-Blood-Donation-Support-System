@@ -1,5 +1,6 @@
 package com.example.backend_blood_donation_system.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +42,9 @@ public class DonationHistoryService {
 
     @Autowired
     private BloodInventoryRepository bloodInventoryRepository;
-
+    
+    @Autowired
+    private  CertificateService certificateService;
     // Lấy tất cả lịch sử và chuyển đổi sang DTO
     public List<DonationHistoryDTO> getAll() {
         return donationHistoryRepository.findAll().stream()
@@ -57,7 +60,6 @@ public class DonationHistoryService {
                 .collect(Collectors.toList());
     }
 
-
     /**
      * Ghi lại một ca hiến máu đã hoàn thành.
      */
@@ -65,19 +67,24 @@ public class DonationHistoryService {
     public DonationHistoryDTO recordDonation(RecordDonationRequestDTO requestDTO) {
         // 1. Tìm Appointment dựa vào ID
         Appointment appointment = appointmentRepository.findById(requestDTO.getAppointmentId())
-                .orElseThrow(() -> new EntityNotFoundException("Appointment not found with id: " + requestDTO.getAppointmentId()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Appointment not found with id: " + requestDTO.getAppointmentId()));
 
         // 2. Kiểm tra trạng thái của Appointment, phải là 'APPROVED'
         if (!"APPROVED".equalsIgnoreCase(appointment.getStatus())) {
-            throw new IllegalStateException("Cannot record donation for an appointment that is not in 'APPROVED' status. Current status: " + appointment.getStatus());
+            throw new IllegalStateException(
+                    "Cannot record donation for an appointment that is not in 'APPROVED' status. Current status: "
+                            + appointment.getStatus());
         }
 
         // 3. Lấy các entity liên quan
         BloodType bloodType = bloodTypeRepository.findById(requestDTO.getBloodTypeId())
-                .orElseThrow(() -> new EntityNotFoundException("BloodType not found with id: " + requestDTO.getBloodTypeId()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "BloodType not found with id: " + requestDTO.getBloodTypeId()));
 
         ComponentType componentType = componentTypeRepository.findById(requestDTO.getComponentTypeId())
-                .orElseThrow(() -> new EntityNotFoundException("ComponentType not found with id: " + requestDTO.getComponentTypeId()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "ComponentType not found with id: " + requestDTO.getComponentTypeId()));
 
         // 4. Tạo đối tượng DonationHistory mới
         DonationHistory donationHistory = new DonationHistory();
@@ -104,7 +111,7 @@ public class DonationHistoryService {
         // Tìm bản ghi trong kho, nếu không có thì tạo mới
         BloodInventory inventoryItem = bloodInventoryRepository.findById(inventoryId)
                 .orElse(new BloodInventory());
-        
+
         if (inventoryItem.getId() == null) {
             // Trường hợp TẠO MỚI
             inventoryItem.setId(inventoryId);
@@ -114,11 +121,16 @@ public class DonationHistoryService {
             int currentUnits = inventoryItem.getUnitsAvailable();
             inventoryItem.setUnitsAvailable(currentUnits + requestDTO.getUnits());
         }
-        
+
         // Lưu lại thay đổi vào kho máu
         bloodInventoryRepository.save(inventoryItem);
         // --------------------------------------------------------
-        
+        try {
+            // Gọi service để tạo chứng nhận hiến máu
+            certificateService.generateCertificateForDonation(savedHistory);
+        } catch (IOException e) {
+            System.err.println("Lỗi khi tạo file chứng nhận: " + e.getMessage());
+        }
         // 7. Chuyển đổi entity đã lưu thành DTO để trả về
         return convertToDTO(savedHistory);
     }
@@ -127,17 +139,17 @@ public class DonationHistoryService {
     private DonationHistoryDTO convertToDTO(DonationHistory history) {
         DonationHistoryDTO dto = new DonationHistoryDTO();
         dto.setDonationId(history.getDonationId());
-        
+
         // SỬA: Khớp với trường `userFullName` trong DTO
         // Giả sử User entity có phương thức getFullName()
-        dto.setUserFullName(history.getUser().getFullName()); 
-        
+        dto.setUserFullName(history.getUser().getFullName());
+
         // Giả sử DonationCenter entity có phương thức getName()
-        dto.setCenterName(history.getCenter().getName()); 
+        dto.setCenterName(history.getCenter().getName());
 
         // SỬA: Khớp với trường `bloodType` và getter `getType()` trong BloodType entity
         dto.setBloodType(history.getBloodType().getType());
-        
+
         // Giả sử ComponentType entity có phương thức getName()
         dto.setComponentType(history.getComponentType().getName());
 
