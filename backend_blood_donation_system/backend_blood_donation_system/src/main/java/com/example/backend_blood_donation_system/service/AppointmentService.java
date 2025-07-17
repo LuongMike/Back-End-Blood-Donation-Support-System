@@ -119,4 +119,39 @@ public class AppointmentService {
         return dto;
     }
 
+    public List<AppointmentDTO> getAppointmentsByUser(Integer userId) {
+        List<Appointment> appointments = appointmentRepository.findByUser_UserId(userId);
+
+        return appointments.stream().map(app -> {
+            AppointmentDTO dto = new AppointmentDTO();
+
+            dto.setAppointmentId(app.getAppointmentId());
+
+            // CenterSummaryDTO mapping
+            DonationCenter center = app.getCenter();
+            if (center != null) {
+                CenterSummaryDTO centerDTO = new CenterSummaryDTO();
+                centerDTO.setCenterId(center.getCenterId());
+                centerDTO.setName(center.getName());
+                dto.setCenter(centerDTO);
+            }
+
+            // UserSummaryDTO mapping
+            User user = app.getUser();
+            if (user != null) {
+                UserSummaryDTO userDTO = new UserSummaryDTO();
+                userDTO.setUserId(user.getUserId());
+                userDTO.setFullName(user.getFullName());
+                dto.setUser(userDTO);
+            }
+
+            // Other appointment fields
+            dto.setScheduledDate(app.getScheduledDate().toLocalDate()); // java.sql.Date to LocalDate
+            dto.setStatus(app.getStatus());
+            dto.setScreeningResult(app.getScreeningResult());
+            dto.setRemarks(app.getRemarks());
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
 }

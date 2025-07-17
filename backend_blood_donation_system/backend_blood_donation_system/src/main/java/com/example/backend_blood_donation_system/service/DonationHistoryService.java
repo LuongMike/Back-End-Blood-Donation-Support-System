@@ -157,4 +157,19 @@ public class DonationHistoryService {
         dto.setUnits(history.getUnits());
         return dto;
     }
+    //SERVICE CHO MEMBER THẤY LỊCH SỬ HIẾN MÁU
+    public List<DonationHistoryDTO> getDonationHistoryByUser(Integer userId) {
+        List<DonationHistory> historyList = donationHistoryRepository.findByUser_UserId(userId);
+
+        return historyList.stream().map(history -> {
+            DonationHistoryDTO dto = new DonationHistoryDTO();
+            dto.setDonationId(history.getDonationId());
+            dto.setDonationDate(history.getDonationDate());
+            dto.setCenterName(history.getCenter().getName());
+            dto.setBloodType(history.getBloodType().getType());
+            dto.setComponentType(history.getComponentType().getName());
+            dto.setUnits(history.getUnits());
+            return dto;
+        }).collect(Collectors.toList());
+    }
 }

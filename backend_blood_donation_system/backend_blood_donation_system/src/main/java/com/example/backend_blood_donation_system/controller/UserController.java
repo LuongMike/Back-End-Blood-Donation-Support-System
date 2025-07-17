@@ -1,19 +1,14 @@
 package com.example.backend_blood_donation_system.controller;
 
 
-import com.example.backend_blood_donation_system.dto.NotificationResponse;
-import com.example.backend_blood_donation_system.dto.UserInfoDTO;
+import com.example.backend_blood_donation_system.dto.*;
+import com.example.backend_blood_donation_system.entity.DonationHistory;
 import com.example.backend_blood_donation_system.entity.UserNotification;
 import com.example.backend_blood_donation_system.security.CustomUserDetails;
-import com.example.backend_blood_donation_system.service.NotificationService;
+import com.example.backend_blood_donation_system.service.*;
 
-import com.example.backend_blood_donation_system.dto.BloodTypeDTO;
 import com.example.backend_blood_donation_system.dto.UserInfoDTO;
-import com.example.backend_blood_donation_system.dto.UserProfileDTO;
 import com.example.backend_blood_donation_system.repository.UserRepository;
-import com.example.backend_blood_donation_system.service.BloodTypeService;
-
-import com.example.backend_blood_donation_system.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +32,11 @@ public class UserController {
 
     private BloodTypeService bloodTypeService;
 
+    @Autowired
+    private DonationHistoryService donationHistoryService;
+
+    @Autowired
+    private AppointmentService appointmentService;
 
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDTO> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -79,6 +79,23 @@ public class UserController {
         List<BloodTypeDTO> bloodTypes = bloodTypeService.getAllBloodTypes();
         return ResponseEntity.ok(bloodTypes);
 
+    }
+
+    @GetMapping("/donation-history")
+    public ResponseEntity<List<DonationHistoryDTO>> getDonationHistory(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Integer userId = userDetails.getUser().getUserId();
+        List<DonationHistoryDTO> dtoList = donationHistoryService.getDonationHistoryByUser(userId);
+        return ResponseEntity.ok(dtoList);
+    }
+    @GetMapping("/appointments")
+    public ResponseEntity<List<AppointmentDTO>> getAppointments(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Integer userId = userDetails.getUser().getUserId();
+        List<AppointmentDTO> appointments = appointmentService.getAppointmentsByUser(userId);
+        return ResponseEntity.ok(appointments);
     }
 
 }

@@ -8,6 +8,9 @@ import com.example.backend_blood_donation_system.entity.Appointment;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
     List<Appointment> findByScheduledDate(Date scheduledDate);
-
+    List<Appointment> findByUser_UserId(Integer userId);
     long countByScheduledDate(Date scheduledDate);
+
+
+
 }
