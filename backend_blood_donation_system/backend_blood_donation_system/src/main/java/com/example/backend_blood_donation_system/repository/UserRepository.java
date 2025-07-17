@@ -29,4 +29,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findByRole(String role);
 
     List<User> findAllByRole(String role);
+
+    @Query("SELECT u FROM User u " +
+       "LEFT JOIN FETCH u.profile p " +
+       "LEFT JOIN FETCH p.bloodType " +
+       "WHERE u.role = 'MEMBER' ")
+List<User> findAllMembersWithProfileAndBloodType();
 }

@@ -1,5 +1,6 @@
 package com.example.backend_blood_donation_system.entity;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,4 +33,5 @@ public class BloodType {
     @Size(max = 3, message = "Blood type cannot exceed 3 characters")
 
     private String type;
+
 }
