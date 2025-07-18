@@ -56,22 +56,16 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Bean này sẽ định nghĩa các quy tắc CORS cho Spring Security
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:3000",
-                "https://blood-donation-support-system.netlify.app")); // Cho phép frontend
-                                                                       // configuration.setAllowedOrigins(List.of("http://localhost:5177"));
+        configuration.addAllowedOriginPattern("*");
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(List.of("*")); // Cho phép mọi header
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Áp dụng cho mọi đường dẫn
-
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
