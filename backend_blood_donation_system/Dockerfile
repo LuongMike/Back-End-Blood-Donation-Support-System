@@ -1,13 +1,15 @@
-# Giai đoạn 1: Build ứng dụng với Maven và Java 21
-# Sử dụng lệnh mvn trực tiếp thay vì ./mvnw
+# Giai đoạn 1: Build ứng dụng
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
-COPY pom.xml .
+
+# Trỏ đường dẫn vào thư mục con chứa code
+COPY backend_blood_donation_system/pom.xml .
 RUN mvn dependency:go-offline
-COPY src src
+COPY backend_blood_donation_system/src src
+
 RUN mvn package -DskipTests
 
-# Giai đoạn 2: Chạy ứng dụng trên một môi trường Java 21 nhẹ hơn
+# Giai đoạn 2: Chạy ứng dụng
 FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
