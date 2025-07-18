@@ -39,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 public class CertificateService {
 
         private final DonationCertificateRepository certificateRepository;
-        private final Path PDF_STORAGE_DIR = Paths.get(System.getProperty("user.dir"), "certificates-storage");
+        private final Path PDF_STORAGE_DIR = Paths.get("/tmp/certificates-storage");
 
         // Đường dẫn đến tài nguyên trong project
         public static final String FONT_BOLD = "src/main/resources/fonts/NotoSans-Bold.ttf";
@@ -54,9 +54,8 @@ public class CertificateService {
                 }
                 String fileName = "certificate-" + donation.getDonationId() + ".pdf";
                 Path pdfPath = PDF_STORAGE_DIR.resolve(fileName);
-
-                createPdfFile(pdfPath.toString(), donation,
-                                UUID.randomUUID().toString().substring(0, 13).toUpperCase().replace("-", ""));
+              
+                createPdfFile(pdfPath.toString(), donation, certificateCode);
 
                 DonationCertificate certificate = DonationCertificate.builder()
                                 .user(donation.getUser())
