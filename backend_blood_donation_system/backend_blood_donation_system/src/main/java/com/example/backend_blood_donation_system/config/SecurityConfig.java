@@ -38,8 +38,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/DonationCenter", // public API
                                 "/ws/**", // cho phép kết nối WebSocket endpoint
-                                 "/api/public/certificate/verify/{code}" 
-                        ).permitAll()
+                                "/api/public/certificate/verify/{code}")
+                        .permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/blood-types").permitAll()
                         .requestMatchers("/api/component-types").permitAll()
@@ -49,11 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/forum/**").permitAll()
                         .requestMatchers("/api/member/**").hasAuthority("MEMBER")
 
-
-                        
-                        .anyRequest().authenticated()
-                )
-
+                        .anyRequest().authenticated())
 
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -65,11 +61,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000",
-                                                    "https://*.netlify.app")); // Cho phép frontend
-        // configuration.setAllowedOrigins(List.of("http://localhost:5177"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:3000",
+                "https://blood-donation-support-system.netlify.app")); // Cho phép frontend
+                                                                       // configuration.setAllowedOrigins(List.of("http://localhost:5177"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*")); // Cho phép mọi header
         configuration.setAllowCredentials(true);
 
