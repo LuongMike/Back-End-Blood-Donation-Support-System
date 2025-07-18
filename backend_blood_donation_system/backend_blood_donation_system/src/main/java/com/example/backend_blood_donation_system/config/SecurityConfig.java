@@ -66,7 +66,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
 
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Cho phép frontend
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000",
+                                                    "https://*.netlify.app")); // Cho phép frontend
         // configuration.setAllowedOrigins(List.of("http://localhost:5177"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
         configuration.setAllowedHeaders(List.of("*")); // Cho phép mọi header
