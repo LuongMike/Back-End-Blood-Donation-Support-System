@@ -35,9 +35,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // =================================================================
         // SỬA LỖI TẠI ĐÂY
-        // Thêm tất cả các đường dẫn công khai vào danh sách cần bỏ qua.
+        // Thêm /api/uploads/ vào danh sách các đường dẫn được bỏ qua
         if (path.startsWith("/api/auth/") ||
-            path.startsWith("/api/blog") ||       // Cho phép /api/blog và /api/blog/all
+            path.startsWith("/api/blog") ||
+            path.startsWith("/api/uploads/") || // <-- DÒNG QUAN TRỌNG NHẤT
             path.startsWith("/uploads/") ||
             path.startsWith("/api/blood-types") ||
             path.startsWith("/api/component-types") ||
