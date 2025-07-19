@@ -32,13 +32,21 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        // Bỏ qua filter cho các endpoint public
-        if (path.contains("/api/auth/login") ||
-                path.contains("/api/auth/register") ||
-                path.contains("/ws")) {
+
+        // =================================================================
+        // SỬA LỖI TẠI ĐÂY
+        // Thêm tất cả các đường dẫn công khai vào danh sách cần bỏ qua.
+        if (path.startsWith("/api/auth/") ||
+            path.startsWith("/api/blog") ||       // Cho phép /api/blog và /api/blog/all
+            path.startsWith("/uploads/") ||
+            path.startsWith("/api/blood-types") ||
+            path.startsWith("/api/component-types") ||
+            path.startsWith("/api/public/") ||
+            path.startsWith("/ws")) {
             filterChain.doFilter(request, response);
             return;
         }
+        // =================================================================
 
         String token = request.getHeader("Authorization");
         String tokenValue = null;
@@ -72,7 +80,5 @@ public class JwtFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.getWriter().write("Token is invalid or blacklisted");
         }
-
     }
-
 }
