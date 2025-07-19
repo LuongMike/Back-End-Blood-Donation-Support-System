@@ -42,9 +42,10 @@ public class DonationHistoryService {
 
     @Autowired
     private BloodInventoryRepository bloodInventoryRepository;
-    
+
     @Autowired
-    private  CertificateService certificateService;
+    private CertificateService certificateService;
+
     // Lấy tất cả lịch sử và chuyển đổi sang DTO
     public List<DonationHistoryDTO> getAll() {
         return donationHistoryRepository.findAll().stream()
@@ -127,6 +128,8 @@ public class DonationHistoryService {
         // --------------------------------------------------------
         try {
             // Gọi service để tạo chứng nhận hiến máu
+            System.out.println("Gọi generateCertificateForDonation cho DonationId = " + savedHistory.getDonationId());
+
             certificateService.generateCertificateForDonation(savedHistory);
         } catch (IOException e) {
             System.err.println("Lỗi khi tạo file chứng nhận: " + e.getMessage());
@@ -157,7 +160,8 @@ public class DonationHistoryService {
         dto.setUnits(history.getUnits());
         return dto;
     }
-    //SERVICE CHO MEMBER THẤY LỊCH SỬ HIẾN MÁU
+
+    // SERVICE CHO MEMBER THẤY LỊCH SỬ HIẾN MÁU
     public List<DonationHistoryDTO> getDonationHistoryByUser(Integer userId) {
         List<DonationHistory> historyList = donationHistoryRepository.findByUser_UserId(userId);
 
