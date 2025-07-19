@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**", "/api/public/certificate/verify/{code}").permitAll()
 
                         // Cho phép request GET tới thư mục uploads
-                        .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/uploads/**").permitAll()
 
                         // Phân quyền theo vai trò
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
