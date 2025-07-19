@@ -35,6 +35,7 @@ public class SecurityConfig {
 
                         // Các đường dẫn công khai
                         .requestMatchers("/api/auth/**", "/api/blog/**", "/api/blood-types", "/api/component-types")
+
                         .permitAll()
                         .requestMatchers("/ws/**", "/api/public/certificate/verify/{code}").permitAll()
 
