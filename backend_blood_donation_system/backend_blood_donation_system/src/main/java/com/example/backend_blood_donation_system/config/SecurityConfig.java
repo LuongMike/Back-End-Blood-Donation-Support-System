@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,30 +28,26 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-
-                // Kích hoạt CORS và sử dụng Bean 'corsConfigurationSource' bên dưới
                 .cors(withDefaults())
-
                 .authorizeHttpRequests(auth -> auth
+                        // Cho phép tất cả các request OPTIONS (quan trọng cho CORS)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        .requestMatchers("/api/auth/**").permitAll() // Cho phép lấy danh sách trung tâm mà không cần
-                                                                     // login
-                        .requestMatchers(
-                                "/api/DonationCenter", // public API
-                                "/ws/**", // cho phép kết nối WebSocket endpoint
-                                "/api/public/certificate/verify/{code}")
+                        // Các đường dẫn công khai
+                        .requestMatchers("/api/auth/**", "/api/blog/**", "/api/blood-types", "/api/component-types")
                         .permitAll()
-                        .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers("/api/blood-types").permitAll()
-                        .requestMatchers("/api/component-types").permitAll()
+                        .requestMatchers("/ws/**", "/api/public/certificate/verify/{code}").permitAll()
+
+                        // Cho phép request GET tới thư mục uploads
+                        .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
+
+                        // Phân quyền theo vai trò
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                        // THÊM DÒNG NÀY: Cho phép user có quyền STAFF truy cập vào /api/staff/**
                         .requestMatchers("/api/staff/**").hasAuthority("STAFF")
-                        .requestMatchers("/api/forum/**").permitAll()
                         .requestMatchers("/api/member/**").hasAuthority("MEMBER")
 
+                        // Tất cả các request còn lại cần xác thực
                         .anyRequest().authenticated())
-
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
