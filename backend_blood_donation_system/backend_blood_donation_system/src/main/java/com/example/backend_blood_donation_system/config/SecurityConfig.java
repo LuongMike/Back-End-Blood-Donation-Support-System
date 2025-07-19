@@ -55,11 +55,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/staff/**").hasAuthority("STAFF")
                         .requestMatchers("/api/member/**").hasAuthority("MEMBER")
 
+
                         // Tất cả các request còn lại cần xác thực
                         .anyRequest().authenticated())
                 // Quan trọng: Filter JWT chỉ được áp dụng sau khi các quy tắc trên đã được xử
                 // lý
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+
 
         return http.build();
     }
