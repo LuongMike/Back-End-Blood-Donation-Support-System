@@ -39,6 +39,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(withDefaults())
             .authorizeHttpRequests(auth -> auth
+
                 // Các đường dẫn công khai khác
                 .requestMatchers(
                     "/api/auth/**",
@@ -58,6 +59,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
