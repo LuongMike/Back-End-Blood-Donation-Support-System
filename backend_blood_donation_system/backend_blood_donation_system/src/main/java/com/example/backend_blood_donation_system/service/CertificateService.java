@@ -43,9 +43,10 @@ public class CertificateService {
         private final DonationCertificateRepository certificateRepository;
         private final Path pdfStorageDir;
 
+        // Thêm giá trị mặc định ":./certificates-storage"
         @Autowired
         public CertificateService(DonationCertificateRepository certificateRepository,
-                        @Value("${certificate.storage-dir}") String storageDir) {
+                        @Value("${certificate.storage-dir:./certificates-storage}") String storageDir) {
                 this.certificateRepository = certificateRepository;
                 this.pdfStorageDir = Paths.get(storageDir);
         }
