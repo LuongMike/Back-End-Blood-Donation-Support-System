@@ -2,65 +2,33 @@ package com.example.backend_blood_donation_system.config;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import static org.springframework.security.config.Customizer.withDefaults;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
-@EnableMethodSecurity
 public class SecurityConfig {
-
-    @Autowired
-    private JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .cors(withDefaults())
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .cors(withDefaults()) // Vẫn giữ lại CORS
             .authorizeHttpRequests(auth -> auth
-                // Cho phép tất cả các request OPTIONS để xử lý CORS preflight
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                
-                // Các đường dẫn công khai khác
-                .requestMatchers(
-                    "/api/auth/**",
-                    "/api/blog/**",
-                    "/api/blood-types",
-                    "/api/component-types",
-                    "/api/public/**",
-                    "/ws/**"
-                ).permitAll()
-                
-                // Cho phép request GET tới thư mục uploads mà không cần xác thực
-                .requestMatchers(HttpMethod.GET, "/api/uploads/**", "/uploads/**").permitAll()
-
-                // Phân quyền theo vai trò
-                .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/api/staff/**").hasAuthority("STAFF")
-                .requestMatchers("/api/member/**").hasAuthority("MEMBER")
-
-                // Tất cả các request còn lại phải được xác thực
-                .anyRequest().authenticated()
+                // CHO PHÉP TẤT CẢ MỌI REQUEST
+                .anyRequest().permitAll()
             );
-
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        // Cấu hình CORS vẫn giữ nguyên
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
             "https://blood-donation-support-system.netlify.app",
@@ -72,10 +40,5 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
