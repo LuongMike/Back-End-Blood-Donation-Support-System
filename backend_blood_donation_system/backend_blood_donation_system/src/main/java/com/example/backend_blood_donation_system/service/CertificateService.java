@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,7 @@ public class CertificateService {
         private final DonationCertificateRepository certificateRepository;
         private final Path pdfStorageDir;
 
+        @Autowired
         public CertificateService(DonationCertificateRepository certificateRepository,
                         @Value("${certificate.storage-dir}") String storageDir) {
                 this.certificateRepository = certificateRepository;
