@@ -20,9 +20,11 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(withDefaults()) // Vẫn giữ lại CORS
             .authorizeHttpRequests(auth -> auth
+
                 // CHO PHÉP TẤT CẢ MỌI REQUEST
                 .anyRequest().permitAll()
             );
+
         return http.build();
     }
 
