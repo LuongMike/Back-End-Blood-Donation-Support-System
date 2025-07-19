@@ -31,7 +31,9 @@ public class SecurityConfig {
             .cors(withDefaults())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
+
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                 .requestMatchers(
                     "/api/auth/**",
                     "/api/blog/**", // Blog bây giờ là công khai
@@ -44,7 +46,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/staff/**").hasAuthority("STAFF")
                 .requestMatchers("/api/member/**").hasAuthority("MEMBER")
                 .anyRequest().authenticated()
+
             );
+
         return http.build();
     }
 
