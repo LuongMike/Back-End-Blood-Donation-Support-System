@@ -34,16 +34,12 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.VerticalAlignment;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class CertificateService {
 
         private final DonationCertificateRepository certificateRepository;
         private final Path pdfStorageDir;
 
-        // Thêm giá trị mặc định ":./certificates-storage"
         @Autowired
         public CertificateService(DonationCertificateRepository certificateRepository,
                         @Value("${certificate.storage-dir:./certificates-storage}") String storageDir) {
@@ -51,17 +47,11 @@ public class CertificateService {
                 this.pdfStorageDir = Paths.get(storageDir);
         }
 
-        // public static final String FONT_BOLD =
-        // "src/main/resources/fonts/NotoSans-Bold.ttf";
-        // public static final String FONT_REGULAR =
-        // "src/main/resources/fonts/NotoSans-Regular.ttf";
-        // public static final String LOGO_IMAGE = "src/main/resources/images/logo.png";
-
         public void generateCertificateForDonation(DonationHistory donation) throws IOException {
                 String certificateCode = UUID.randomUUID().toString().substring(0, 13).toUpperCase().replace("-", "");
 
-                if (!Files.exists(this.pdfStorageDir)) { // Sửa ở đây
-                        Files.createDirectories(this.pdfStorageDir); // Sửa ở đây
+                if (!Files.exists(this.pdfStorageDir)) {
+                        Files.createDirectories(this.pdfStorageDir);
                 }
                 String fileName = "certificate-" + donation.getDonationId() + ".pdf";
                 Path pdfPath = this.pdfStorageDir.resolve(fileName);
@@ -84,46 +74,31 @@ public class CertificateService {
                 PdfDocument pdf = new PdfDocument(writer);
                 pdf.setDefaultPageSize(PageSize.A4);
                 Document document = new Document(pdf);
-                // Giảm bớt lề dưới để có không gian cho footer cố định
                 document.setMargins(60, 60, 80, 60);
 
-                // Tải font chữ tùy chỉnh từ classpath
-                PdfFont fontBold, fontRegular;
-                try (InputStream fontBoldStream = getClass().getResourceAsStream("/fonts/NotoSans-Bold.ttf");
-                                InputStream fontRegularStream = getClass()
-                                                .getResourceAsStream("/fonts/NotoSans-Regular.ttf")) {
-
-                        if (fontBoldStream == null || fontRegularStream == null) {
-                                throw new IOException("Không thể tìm thấy file font trong classpath.");
-                        }
-
-                        fontBold = PdfFontFactory.createFont(fontBoldStream.readAllBytes(),
-                                        PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-                        fontRegular = PdfFontFactory.createFont(fontRegularStream.readAllBytes(),
-                                        PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-                }
+                // --- Tải tài nguyên một cách an toàn ---
+                PdfFont fontBold = loadFontFromClasspath("/fonts/NotoSans-Bold.ttf");
+                PdfFont fontRegular = loadFontFromClasspath("/fonts/NotoSans-Regular.ttf");
+                byte[] logoBytes = loadImageFromClasspath("/images/logo.png");
 
                 // --- Header ---
                 Table headerTable = new Table(UnitValue.createPercentArray(new float[] { 1, 3 }))
                                 .useAllAvailableWidth();
                 headerTable.setBorder(null);
 
-                // Logo từ classpath
-                try (InputStream logoStream = getClass().getResourceAsStream("/images/logo.png")) {
-                        if (logoStream == null) {
-                                throw new IOException("Không tìm thấy file logo trong classpath.");
-                        }
-                        byte[] logoBytes = logoStream.readAllBytes();
+                // Logo
+                if (logoBytes != null) {
+                        // Bỏ khối try-catch ở đây
                         Image logo = new Image(ImageDataFactory.create(logoBytes));
                         logo.setHeight(60);
                         Cell logoCell = new Cell().add(logo).setBorder(null).setTextAlignment(TextAlignment.LEFT);
                         headerTable.addCell(logoCell);
-                } catch (IOException e) {
+                } else {
+                        // Thêm cell rỗng nếu không có logo
                         headerTable.addCell(new Cell().setBorder(null));
-                        System.err.println("Lỗi khi đọc file logo từ classpath: " + e.getMessage());
                 }
 
-                // Quốc hiệu và tiêu ngữ
+                // ... (Phần còn lại của code tạo PDF giữ nguyên)
                 Paragraph nationalMotto = new Paragraph()
                                 .setFont(fontBold).setFontSize(10).setTextAlignment(TextAlignment.CENTER)
                                 .add("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\n")
@@ -137,7 +112,6 @@ public class CertificateService {
                 headerTable.addCell(orgCell);
                 document.add(headerTable);
 
-                // --- Tiêu đề chính ---
                 document.add(new Paragraph("\n"));
                 Paragraph title = new Paragraph("GIẤY CHỨNG NHẬN HIẾN MÁU TÌNH NGUYỆN")
                                 .setFont(fontBold).setFontSize(22)
@@ -146,7 +120,6 @@ public class CertificateService {
                                 .setMarginTop(20);
                 document.add(title);
 
-                // --- Nội dung chính ---
                 document.add(new Paragraph("\n\n"));
                 Paragraph body = new Paragraph()
                                 .setFont(fontRegular).setFontSize(12).setFirstLineIndent(30)
@@ -164,12 +137,10 @@ public class CertificateService {
                                 .add(new Text("\n\nNgười bệnh luôn ghi ơn tấm lòng nhân ái của Ông/Bà.").setItalic());
                 document.add(body);
 
-                // --- Chữ ký và ngày tháng (Footer) ---
                 Table footerTable = new Table(UnitValue.createPercentArray(new float[] { 1, 1 }))
                                 .useAllAvailableWidth();
                 footerTable.setBorder(null);
 
-                // Mã tra cứu
                 Cell codeCell = new Cell().add(new Paragraph("Mã tra cứu: " + code)
                                 .setFont(fontRegular).setFontSize(9))
                                 .setBorder(null)
@@ -177,7 +148,6 @@ public class CertificateService {
                                 .setVerticalAlignment(VerticalAlignment.BOTTOM);
                 footerTable.addCell(codeCell);
 
-                // Ngày tháng và chữ ký
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'Ngày' dd 'tháng' MM 'năm' yyyy");
                 String formattedDate = LocalDate.now().format(formatter);
                 Cell signatureCell = new Cell().add(new Paragraph(formattedDate)
@@ -185,22 +155,19 @@ public class CertificateService {
                                 .add(new Paragraph("TRƯỞNG BAN CHỈ ĐẠO")
                                                 .setFont(fontBold).setFontSize(12)
                                                 .setTextAlignment(TextAlignment.CENTER))
-                                .add(new Paragraph("\n\n\n") // Giảm bớt khoảng trống chữ ký
+                                .add(new Paragraph("\n\n\n")
                                                 .setFont(fontRegular).setFontSize(12)
                                                 .setTextAlignment(TextAlignment.CENTER))
                                 .setBorder(null);
                 footerTable.addCell(signatureCell);
 
-                // === SỬA LỖI TẠI ĐÂY: Đặt footer ở vị trí cố định ===
                 footerTable.setFixedPosition(
-                                document.getLeftMargin(), // Căn lề trái
-                                document.getBottomMargin() - 20, // Vị trí từ dưới lên
+                                document.getLeftMargin(),
+                                document.getBottomMargin() - 20,
                                 document.getPdfDocument().getDefaultPageSize().getWidth() - document.getLeftMargin()
-                                                - document.getRightMargin() // Chiều rộng
-                );
+                                                - document.getRightMargin());
                 document.add(footerTable);
 
-                // Vẽ viền cho trang
                 PdfCanvas canvas = new PdfCanvas(pdf.getFirstPage());
                 canvas.setStrokeColor(ColorConstants.RED)
                                 .setLineWidth(2)
@@ -208,5 +175,22 @@ public class CertificateService {
                                 .stroke();
 
                 document.close();
+        }
+
+        // --- CÁC HÀM HỖ TRỢ AN TOÀN ---
+
+        private byte[] loadImageFromClasspath(String path) throws IOException {
+                try (InputStream stream = getClass().getResourceAsStream(path)) {
+                        if (stream == null) {
+                                // Ném ra lỗi rõ ràng nếu không tìm thấy file
+                                throw new IOException("Không thể tìm thấy tài nguyên hình ảnh tại classpath: " + path);
+                        }
+                        return stream.readAllBytes();
+                }
+        }
+
+        private PdfFont loadFontFromClasspath(String path) throws IOException {
+                byte[] fontBytes = loadImageFromClasspath(path); // Dùng lại hàm trên để đọc file
+                return PdfFontFactory.createFont(fontBytes, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
         }
 }
