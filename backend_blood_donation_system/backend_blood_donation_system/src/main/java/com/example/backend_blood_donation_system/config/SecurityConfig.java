@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,52 +24,34 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
-    // Bỏ qua hoàn toàn bảo mật cho các file tĩnh để giải quyết triệt để lỗi ảnh
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(
-            "/api/uploads/**",
-            "/uploads/**"
-        );
-    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .cors(withDefaults())
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
-                // Các đường dẫn công khai khác
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(
                     "/api/auth/**",
-                    "/api/blog/**",
+                    "/api/blog/**", // Blog bây giờ là công khai
                     "/api/blood-types",
                     "/api/component-types",
                     "/api/public/**",
                     "/ws/**"
                 ).permitAll()
-                
-                // Phân quyền theo vai trò
                 .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/api/staff/**").hasAuthority("STAFF")
                 .requestMatchers("/api/member/**").hasAuthority("MEMBER")
-
-                // Tất cả các request còn lại cần xác thực
                 .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
+            );
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        // ... (Phần này giữ nguyên, không cần thay đổi)
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-            "https://blood-donation-support-system.netlify.app",
-            "http://localhost:3000"
-        ));
+        configuration.setAllowedOrigins(List.of("https://blood-donation-support-system.netlify.app", "http://localhost:3000"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -78,11 +60,8 @@ public class SecurityConfig {
         return source;
     }
 
-    // ==========================================================
-    // THÊM LẠI BEAN BỊ THIẾU TẠI ĐÂY
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    // ==========================================================
 }
