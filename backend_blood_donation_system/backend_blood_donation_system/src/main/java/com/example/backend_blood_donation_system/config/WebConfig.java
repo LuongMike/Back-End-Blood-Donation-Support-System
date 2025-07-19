@@ -13,9 +13,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Cấu hình này sẽ đọc đường dẫn từ biến môi trường
-        // và phục vụ file từ đúng thư mục đó (ví dụ: /data/uploads/)
-        registry.addResourceHandler("/uploads/**")
+        // ==========================================================
+        // SỬA LỖI TẠI ĐÂY
+        // Đổi đường dẫn từ "/uploads/**" thành "/api/uploads/**"
+        // để khớp với yêu cầu từ frontend
+        registry.addResourceHandler("/api/uploads/**")
                 .addResourceLocations("file:" + uploadDir + "/");
+        // ==========================================================
     }
 }
