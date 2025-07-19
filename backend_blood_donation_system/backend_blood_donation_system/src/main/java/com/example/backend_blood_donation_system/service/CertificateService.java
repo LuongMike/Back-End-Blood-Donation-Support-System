@@ -1,7 +1,7 @@
 package com.example.backend_blood_donation_system.service;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.backend_blood_donation_system.entity.DonationCertificate;
@@ -39,22 +40,29 @@ import lombok.RequiredArgsConstructor;
 public class CertificateService {
 
         private final DonationCertificateRepository certificateRepository;
-        private final Path PDF_STORAGE_DIR = Paths.get("/tmp/certificates-storage");
+        private final Path pdfStorageDir;
 
-        // Đường dẫn đến tài nguyên trong project
-        public static final String FONT_BOLD = "src/main/resources/fonts/NotoSans-Bold.ttf";
-        public static final String FONT_REGULAR = "src/main/resources/fonts/NotoSans-Regular.ttf";
-        public static final String LOGO_IMAGE = "src/main/resources/images/logo.png";
+        public CertificateService(DonationCertificateRepository certificateRepository,
+                        @Value("${certificate.storage-dir}") String storageDir) {
+                this.certificateRepository = certificateRepository;
+                this.pdfStorageDir = Paths.get(storageDir);
+        }
+
+        // public static final String FONT_BOLD =
+        // "src/main/resources/fonts/NotoSans-Bold.ttf";
+        // public static final String FONT_REGULAR =
+        // "src/main/resources/fonts/NotoSans-Regular.ttf";
+        // public static final String LOGO_IMAGE = "src/main/resources/images/logo.png";
 
         public void generateCertificateForDonation(DonationHistory donation) throws IOException {
                 String certificateCode = UUID.randomUUID().toString().substring(0, 13).toUpperCase().replace("-", "");
 
-                if (!Files.exists(PDF_STORAGE_DIR)) {
-                        Files.createDirectories(PDF_STORAGE_DIR);
+                if (!Files.exists(this.pdfStorageDir)) { // Sửa ở đây
+                        Files.createDirectories(this.pdfStorageDir); // Sửa ở đây
                 }
                 String fileName = "certificate-" + donation.getDonationId() + ".pdf";
-                Path pdfPath = PDF_STORAGE_DIR.resolve(fileName);
-              
+                Path pdfPath = this.pdfStorageDir.resolve(fileName);
+
                 createPdfFile(pdfPath.toString(), donation, certificateCode);
 
                 DonationCertificate certificate = DonationCertificate.builder()
@@ -76,26 +84,40 @@ public class CertificateService {
                 // Giảm bớt lề dưới để có không gian cho footer cố định
                 document.setMargins(60, 60, 80, 60);
 
-                // Tải font chữ tùy chỉnh
-                PdfFont fontBold = PdfFontFactory.createFont(FONT_BOLD,
-                                PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-                PdfFont fontRegular = PdfFontFactory.createFont(FONT_REGULAR,
-                                PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+                // Tải font chữ tùy chỉnh từ classpath
+                PdfFont fontBold, fontRegular;
+                try (InputStream fontBoldStream = getClass().getResourceAsStream("/fonts/NotoSans-Bold.ttf");
+                                InputStream fontRegularStream = getClass()
+                                                .getResourceAsStream("/fonts/NotoSans-Regular.ttf")) {
+
+                        if (fontBoldStream == null || fontRegularStream == null) {
+                                throw new IOException("Không thể tìm thấy file font trong classpath.");
+                        }
+
+                        fontBold = PdfFontFactory.createFont(fontBoldStream.readAllBytes(),
+                                        PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+                        fontRegular = PdfFontFactory.createFont(fontRegularStream.readAllBytes(),
+                                        PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+                }
 
                 // --- Header ---
                 Table headerTable = new Table(UnitValue.createPercentArray(new float[] { 1, 3 }))
                                 .useAllAvailableWidth();
                 headerTable.setBorder(null);
 
-                // Logo
-                try {
-                        Image logo = new Image(ImageDataFactory.create(LOGO_IMAGE));
+                // Logo từ classpath
+                try (InputStream logoStream = getClass().getResourceAsStream("/images/logo.png")) {
+                        if (logoStream == null) {
+                                throw new IOException("Không tìm thấy file logo trong classpath.");
+                        }
+                        byte[] logoBytes = logoStream.readAllBytes();
+                        Image logo = new Image(ImageDataFactory.create(logoBytes));
                         logo.setHeight(60);
                         Cell logoCell = new Cell().add(logo).setBorder(null).setTextAlignment(TextAlignment.LEFT);
                         headerTable.addCell(logoCell);
-                } catch (MalformedURLException e) {
+                } catch (IOException e) {
                         headerTable.addCell(new Cell().setBorder(null));
-                        System.err.println("Không tìm thấy file logo tại: " + LOGO_IMAGE);
+                        System.err.println("Lỗi khi đọc file logo từ classpath: " + e.getMessage());
                 }
 
                 // Quốc hiệu và tiêu ngữ
