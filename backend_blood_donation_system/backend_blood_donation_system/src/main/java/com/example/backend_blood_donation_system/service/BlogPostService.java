@@ -56,7 +56,7 @@ public class BlogPostService {
                 Files.write(filePath, image.getBytes());
 
                 // Lưu đường dẫn web, không phải đường dẫn hệ thống
-                post.setImage("/uploads/" + filename); 
+                post.setImage("/api/uploads/" + filename); 
             } catch (IOException e) {
                 throw new RuntimeException("Lỗi khi lưu ảnh", e);
             }

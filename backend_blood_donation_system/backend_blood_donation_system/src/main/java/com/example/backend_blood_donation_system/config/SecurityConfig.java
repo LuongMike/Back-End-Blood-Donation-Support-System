@@ -39,6 +39,7 @@ public class SecurityConfig {
                     "/api/blog/**", // Blog bây giờ là công khai
                     "/api/blood-types",
                     "/api/component-types",
+                    "/api/uploads/**", // Đảm bảo đường dẫn này khớp với WebConfig
                     "/api/public/**",
                     "/ws/**"
                 ).permitAll()
