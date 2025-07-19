@@ -45,10 +45,12 @@ public class SecurityConfig {
                 .requestMatchers("/api/staff/**").hasAuthority("STAFF")
                 .requestMatchers("/api/member/**").hasAuthority("MEMBER")
 
+
                 // Tất cả các request còn lại cần xác thực
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
