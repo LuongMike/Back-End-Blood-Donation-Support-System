@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class DashboardStatisticsDTO {
     private long totalDonatedUnits;     // Tổng đơn vị máu đã hiến
     private long urgentRequestsCount;   // Số yêu cầu khẩn cấp
+    private long normalRequestsCount;
     private long donorsTodayCount;      // Số người hiến máu hôm nay
-    private long availableBloodUnits;   // Tổng đơn vị máu sẵn có trong kho
+    
 }

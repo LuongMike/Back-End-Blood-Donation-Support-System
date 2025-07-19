@@ -24,23 +24,31 @@ public class DashboardService {
 
     public DashboardStatisticsDTO getDashboardStatistics() {
         
+
+        // tổng đơn vị máu đang giống với tổng đơn vok trong kho 
+        // tổng số yêu cầu 
+        //-> yêu cầu bình thườn 
+        //-> yêu cầu khẩn cấp 
+        //-> người yêu cầu hôm nay 
         // 1. Lấy tổng số đơn vị máu đã hiến
         long totalDonatedUnits = donationHistoryRepository.sumTotalDonatedUnits().orElse(0L);
 
         // 2. Lấy số yêu cầu khẩn cấp đang hoạt động
         long urgentRequestsCount = bloodRequestRepository.countUrgentAndActiveRequests();
 
-        // 3. Lấy số người hiến máu trong hôm nay
+        // 3. Lấy số yêu cầu bình thường đang hoạt động
+        long normalRequestsCount = bloodRequestRepository.countNormalAndActiveRequests();
+
+        // 4. Lấy số người hiến máu trong hôm nay
         long donorsTodayCount = donationHistoryRepository.countByDonationDate(LocalDate.now());
 
-        // 4. Lấy tổng số đơn vị máu có sẵn trong kho
-        long availableBloodUnits = bloodInventoryRepository.sumTotalUnitsAvailable().orElse(0L);
+        
         
         return new DashboardStatisticsDTO(
             totalDonatedUnits, 
             urgentRequestsCount, 
-            donorsTodayCount, 
-            availableBloodUnits
+            normalRequestsCount,  // Thêm số lượng yêu cầu bình thường
+            donorsTodayCount
         );
     }
 }

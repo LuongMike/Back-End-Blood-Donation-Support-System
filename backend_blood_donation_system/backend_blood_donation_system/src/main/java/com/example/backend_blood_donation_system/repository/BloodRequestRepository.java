@@ -38,4 +38,9 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequest, Inte
            "ORDER BY FORMAT(br.requestTime, 'yyyy-MM') ASC") // <-- Sửa tên trường
     List<ChartDataDTO> countRequestsByMonth(@Param("startDate") LocalDateTime startDate);
 
+
+    // MỚI: Đếm các yêu cầu bình thường và chưa hoàn thành hoặc bị từ chối
+    @Query("SELECT COUNT(br) FROM BloodRequest br WHERE br.type = 'NORMAL' AND br.status NOT IN ('COMPLETED', 'REJECTED')")
+    long countNormalAndActiveRequests();
+
 }
