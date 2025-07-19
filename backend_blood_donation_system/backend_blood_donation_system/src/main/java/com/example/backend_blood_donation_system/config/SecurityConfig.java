@@ -52,9 +52,13 @@ public class SecurityConfig {
                 .requestMatchers("/api/staff/**").hasAuthority("STAFF")
                 .requestMatchers("/api/member/**").hasAuthority("MEMBER")
 
+
                 // Tất cả các request còn lại phải được xác thực
                 .anyRequest().authenticated()
             );
+
+
+
 
         return http.build();
     }
