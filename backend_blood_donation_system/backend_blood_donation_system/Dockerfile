@@ -3,9 +3,9 @@ FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
 # Trỏ đường dẫn vào thư mục con chứa code
-COPY pom.xml .
+COPY backend_blood_donation_system/pom.xml .
 RUN mvn dependency:go-offline
-COPY src src
+COPY backend_blood_donation_system/src src
 
 RUN mvn package -DskipTests
 
