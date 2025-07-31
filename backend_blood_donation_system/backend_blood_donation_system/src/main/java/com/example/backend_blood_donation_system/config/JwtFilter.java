@@ -31,6 +31,20 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+
+
+        String path = request.getRequestURI();
+        System.out.println("REQUEST PATH: " + path);
+        if (path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/swagger-ui.html")
+                || path.startsWith("/swagger-ui/index.html")
+                || path.startsWith("/swagger-resources")
+                || path.startsWith("/webjars")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String tokenHeader = request.getHeader("Authorization");
 
         if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) {
@@ -48,17 +62,19 @@ public class JwtFilter extends OncePerRequestFilter {
                     String role = jwtService.extractRole(token);
                     List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
                     CustomUserDetails userDetails = new CustomUserDetails(user, userId, username, role, authorities);
-                    
+
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, authorities
+                            userDetails, null, authorities
                     );
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 });
             }
         } catch (Exception e) {
-            // Bỏ qua lỗi token và cho request đi tiếp
+            System.out.println("Invalid token: " + e.getMessage());
+            // Không set authentication, cứ để filter đi tiếp
         }
 
         filterChain.doFilter(request, response);
     }
+
 }

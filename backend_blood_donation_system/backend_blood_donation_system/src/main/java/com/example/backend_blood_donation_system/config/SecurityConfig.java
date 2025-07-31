@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+
 import static org.springframework.security.config.Customizer.withDefaults;
+
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,28 +29,35 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .cors(withDefaults())
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeHttpRequests(auth -> auth
+                .csrf(csrf -> csrf.disable())
+                .cors(withDefaults())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth
 
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
 
-                .requestMatchers(
-                    "/api/auth/**",
-                    "/api/blog/**", // Blog bây giờ là công khai
-                    "/api/blood-types",
-                    "/api/component-types",
-                    "/api/uploads/**", // Đảm bảo đường dẫn này khớp với WebConfig
-                    "/api/public/**",
-                    "/ws/**"
-                ).permitAll()
-                .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/api/staff/**").hasAuthority("STAFF")
-                .requestMatchers("/api/member/**").hasAuthority("MEMBER")
-                .anyRequest().authenticated()
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/blog/**", // Blog bây giờ là công khai
+                                "/api/blood-types",
+                                "/api/component-types",
+                                "/api/uploads/**", // Đảm bảo đường dẫn này khớp với WebConfig
+                                "/api/public/**",
+                                "/ws/**"
+                        ).permitAll()
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/staff/**").hasAuthority("STAFF")
+                        .requestMatchers("/api/member/**").hasAuthority("MEMBER")
+                        .anyRequest().authenticated()
 
-            );
+                );
 
         return http.build();
     }
@@ -56,7 +65,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://blood-donation-support-system.netlify.app", "http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("https://blood-donation-support-system.netlify.app", "http://localhost:3000","http://localhost:8080"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
