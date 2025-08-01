@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Áp dụng cho toàn bộ endpoint
-                .allowedOrigins("*") // Cho phép mọi domain gọi (có thể thay bằng domain cụ thể)
+                .allowedOrigins("https://blood-donation-support-system.netlify.app") // Cho phép mọi domain gọi (có thể thay bằng domain cụ thể)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
     }

@@ -10,6 +10,7 @@ import com.example.backend_blood_donation_system.service.*;
 import com.example.backend_blood_donation_system.dto.UserInfoDTO;
 import com.example.backend_blood_donation_system.repository.UserRepository;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -38,6 +39,7 @@ public class UserController {
     @Autowired
     private AppointmentService appointmentService;
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDTO> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
         int userId = userDetails.getUser().getUserId();
